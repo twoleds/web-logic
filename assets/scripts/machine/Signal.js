@@ -14,20 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Component"], function (Component) {
+define(function () {
 
-    function MealyState() {
-        Component.call(this);
-        this._name = null;
+    function Signal(name, value) {
+        this.setName(name || "");
+        this.setValue(value || 0);
     }
 
-    MealyState.prototype = Object.create(Component.prototype);
-    MealyState.prototype.constructor = MealyState;
-
-    MealyState.prototype.getName = function () {
+    Signal.prototype.getName = function () {
         return this._name;
     };
 
-    return MealyState;
+    Signal.prototype.getValue = function () {
+        return this._value;
+    };
+
+    Signal.prototype.setName = function (name) {
+        this._name = name;
+    };
+
+    Signal.prototype.setValue = function (value) {
+        this._value = value;
+    };
+
+    return Signal;
 
 });
