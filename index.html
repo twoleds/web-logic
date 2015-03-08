@@ -24,12 +24,14 @@
                 s0.setName("S0");
                 s0.getOutput().append(new Signal("Y0", "0"));
                 s0.getOutput().append(new Signal("Y1", "0"));
+                s0._x = 100;
                 engine.getContainer().appendChild(s0);
 
                 var s1 = new MooreState();
                 s1.setName("S1");
                 s1.getOutput().append(new Signal("Y0", "0"));
                 s1.getOutput().append(new Signal("Y1", "1"));
+                s1._x = 200;
                 engine.getContainer().appendChild(s1);
 
                 var c00 = new MooreConnector();

@@ -25,6 +25,8 @@ define(["engine/Bounds"], function (Bounds) {
     function Component() {
         this._parent = null;
         this._index = Number.POSITIVE_INFINITY;
+        this._draggable = false;
+        this._focusable = false;
     }
 
     Component.prototype = Object.create(Object.prototype);
@@ -53,12 +55,41 @@ define(["engine/Bounds"], function (Bounds) {
         return this._index;
     };
 
-    /**
-     *
-     * @param {PaintEvent} event
-     */
+    Component.prototype.isDraggable = function () {
+        return this._draggable;
+    };
+
+    Component.prototype.isFocusable = function () {
+        return this._focusable;
+    };
+
+    Component.prototype.onBlur = function (event) {
+    };
+
+    Component.prototype.onClick = function (event) {
+    };
+
+    Component.prototype.onDrag = function (event) {
+    };
+
+    Component.prototype.onEnter = function (event) {
+    };
+
+    Component.prototype.onFocus = function (event) {
+    };
+
+    Component.prototype.onLeave = function (event) {
+    };
+
     Component.prototype.onPaint = function (event) {
-        throw new Error("Override this method.");
+    };
+
+    Component.prototype.setDraggable = function (draggable) {
+        this._draggable = draggable;
+    };
+
+    Component.prototype.setFocusable = function (focusable) {
+        this._focusable = focusable;
     };
 
     /**

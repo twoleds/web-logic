@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Component", "machine/SignalList"], function (Component, SignalList) {
+define(["engine/Component", "engine/Bounds", "machine/SignalList"], function (Component, Bounds, SignalList) {
 
     function MooreState() {
         Component.call(this);
@@ -27,6 +27,13 @@ define(["engine/Component", "machine/SignalList"], function (Component, SignalLi
 
     MooreState.prototype = Object.create(Component.prototype);
     MooreState.prototype.constructor = MooreState;
+
+    MooreState.prototype.getBounds = function () {
+        return new Bounds(
+            this._x - this._r, this._y - this._r,
+            this._x + this._r, this._y + this._r
+        );
+    };
 
     MooreState.prototype.getName = function () {
         return this._name;

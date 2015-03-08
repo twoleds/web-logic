@@ -19,6 +19,7 @@ define(["engine/Container", "engine/PaintEvent"], function (Container, PaintEven
     function Engine(canvas) {
         this._canvas = canvas;
         this._container = new Container();
+        this._init();
     }
 
     Engine.prototype = Object.create(Object.prototype);
@@ -29,6 +30,15 @@ define(["engine/Container", "engine/PaintEvent"], function (Container, PaintEven
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         this._container.onPaint(new PaintEvent(this, ctx));
+    };
+
+    Engine.prototype._init = function () {
+        var self = this;
+
+        this._canvas.addEventListener("mousemove", function (event) {
+
+        });
+
     };
 
     Engine.prototype.getCanvas = function () {
