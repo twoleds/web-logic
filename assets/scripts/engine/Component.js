@@ -1,4 +1,4 @@
-// An editor and simulator for final state machine.
+// An editor and simulator for finite-state machine.
 // Copyright (C) 2015  Jaroslav Kuba
 //
 // This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ define(function () {
      */
     function Component() {
         this._parent = null;
+        this._index = Number.POSITIVE_INFINITY;
     }
 
     Component.prototype = Object.create(Object.prototype);
@@ -37,6 +38,24 @@ define(function () {
      */
     Component.prototype.getParent = function () {
         return this._parent;
+    };
+
+    /**
+     * Returns z-index of this component.
+     *
+     * @returns {number}
+     */
+    Component.prototype.getIndex = function () {
+        return this._index;
+    };
+
+    /**
+     * Sets new z-index of this component.
+     *
+     * @param {number} index
+     */
+    Component.prototype.setIndex = function (index) {
+        this._index = index;
     };
 
     return Component;

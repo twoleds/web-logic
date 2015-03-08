@@ -14,29 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Component", "machine/SignalList"], function (Component, SignalList) {
+define(function () {
 
-    function MooreState() {
-        Component.call(this);
-        this._name = null;
-        this._output = new SignalList();
+    function Reader() {
+
     }
 
-    MooreState.prototype = Object.create(Component.prototype);
-    MooreState.prototype.constructor = MooreState;
+    Reader.prototype = Object.create(Object.prototype);
+    Reader.prototype.constructor = Reader;
 
-    MooreState.prototype.getName = function () {
-        return this._name;
-    };
-
-    MooreState.prototype.getOutput = function () {
-        return this._output;
-    };
-
-    MooreState.prototype.setName = function (name) {
-        this._name = name;
-    };
-
-    return MooreState;
+    return Reader;
 
 });

@@ -1,4 +1,4 @@
-// An editor and simulator for final state machine.
+// An editor and simulator for finite-state machine.
 // Copyright (C) 2015  Jaroslav Kuba
 //
 // This program is free software: you can redistribute it and/or modify

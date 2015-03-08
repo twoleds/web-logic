@@ -7,7 +7,35 @@
     </head>
     <body>
 
-        
+        <script type="text/javascript">
+
+            require(["editor/MooreConnector", "editor/MooreState", "machine/Signal"], function (MooreConnector, MooreState, Signal) {
+
+                var s0 = new MooreState();
+                s0.setName("S0");
+                s0.getOutput().append(new Signal("Y0", "0"));
+                s0.getOutput().append(new Signal("Y1", "0"));
+
+                var s1 = new MooreState();
+                s1.setName("S1");
+                s1.getOutput().append(new Signal("Y0", "0"));
+                s1.getOutput().append(new Signal("Y1", "1"));
+
+                var c00 = new MooreConnector();
+                c00.getCondition().append(new Signal("X0", "0"));
+                c00.getCondition().append(new Signal("X1", "1"));
+                c00.setSource(s0);
+                c00.setTarget(s1);
+
+                var c10 = new MooreConnector();
+                c10.getCondition().append(new Signal("X0", "1"));
+                c10.getCondition().append(new Signal("X1", "0"));
+                c10.setSource(s1);
+                c10.setTarget(s0);
+
+            });
+
+        </script>
 
     </body>
 </html>

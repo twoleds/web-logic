@@ -1,4 +1,4 @@
-// An editor and simulator for final state machine.
+// An editor and simulator for finite-state machine.
 // Copyright (C) 2015  Jaroslav Kuba
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,23 +14,36 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Component"], function (Component) {
+define(["engine/Component", "machine/SignalList"], function (Component, SignalList) {
 
     function MooreConnector() {
         Component.call(this);
-        this._sourceState = null;
-        this._targetState = null;
+        this._condition = new SignalList();
+        this._source = null;
+        this._target = null;
     }
 
     MooreConnector.prototype = Object.create(Component.prototype);
     MooreConnector.prototype.constructor = MooreConnector;
 
-    MooreConnector.prototype.getSourceState = function () {
-        return this._sourceState;
+    MooreConnector.prototype.getCondition = function () {
+        return this._condition;
     };
 
-    MooreConnector.prototype.getTargetState = function () {
-        return this._targetState;
+    MooreConnector.prototype.getSource = function () {
+        return this._source;
+    };
+
+    MooreConnector.prototype.getTarget = function () {
+        return this._target;
+    };
+
+    MooreConnector.prototype.setSource = function (state) {
+        this._source = state;
+    };
+
+    MooreConnector.prototype.setTarget = function (state) {
+        this._target = state;
     };
 
     return MooreConnector;

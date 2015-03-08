@@ -1,4 +1,4 @@
-// An editor and simulator for final state machine.
+// An editor and simulator for finite-state machine.
 // Copyright (C) 2015  Jaroslav Kuba
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@ define(["engine/Component"], function (Component) {
 
     function MealyConnector() {
         Component.call(this);
-        this._sourceState = null;
-        this._targetState = null;
+        this._source = null;
+        this._target = null;
     }
 
     MealyConnector.prototype = Object.create(Component.prototype);
     MealyConnector.prototype.constructor = MealyConnector;
 
-    MealyConnector.prototype.getSourceState = function () {
-        return this._sourceState;
+    MealyConnector.prototype.getSource = function () {
+        return this._source;
     };
 
-    MealyConnector.prototype.getTargetState = function () {
-        return this._targetState;
+    MealyConnector.prototype.getTarget = function () {
+        return this._target;
     };
 
     return MealyConnector;
