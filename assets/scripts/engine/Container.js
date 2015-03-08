@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Component"], function (Component) {
+define(["engine/Component", "engine/Bounds"], function (Component, Bounds) {
 
     /**
      * The Container class groups one or more component together.
@@ -47,13 +47,30 @@ define(["engine/Component"], function (Component) {
         }
 
         var index = 0;
-        for (var i = 0; this._children.length; i++) {
+        for (var i = 0; i < this._children.length; i++) {
             if (this._children[i]._index > component._index) {
                 break;
             }
         }
         this._children.splice(index, 0, component);
 
+    };
+
+    /**
+     * Returns bounds of this container.
+     *
+     * @returns {Bounds}
+     * @public
+     */
+    Container.prototype.getBounds = function () {
+        var bounds = new Bounds(
+            Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY,
+            Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY
+        );
+        for (var i = 0; i < this._children.length; i++) {
+            bounds.expand(this._children[i].getBounds());
+        }
+        return bounds;
     };
 
     /**
@@ -64,6 +81,16 @@ define(["engine/Component"], function (Component) {
      */
     Container.prototype.getChildren = function () {
         return this._children.slice(0);
+    };
+
+    /**
+     *
+     * @param {PaintEvent} event
+     */
+    Container.prototype.onPaint = function (event) {
+        for (var i = 0; i < this._children.length; i++) {
+            this._children[i].onPaint(event);
+        }
     };
 
     /**

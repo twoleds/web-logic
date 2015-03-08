@@ -69,6 +69,14 @@ define(["machine/Signal"], function (Signal) {
         }
     };
 
+    SignalList.prototype.toString = function () {
+        var signals = "";
+        for (var i = 0; i < this._signals.length; i++) {
+            signals += this._signals[i]._value;
+        }
+        return signals;
+    };
+
     return SignalList;
 
 });

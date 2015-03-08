@@ -38,6 +38,12 @@ define(["engine/Component", "machine/SignalList"], function (Component, SignalLi
         return this._target;
     };
 
+    MooreConnector.prototype.onPaint = function (event) {
+        var ctx = event.getContext();
+
+
+    };
+
     MooreConnector.prototype.setSource = function (state) {
         this._source = state;
     };

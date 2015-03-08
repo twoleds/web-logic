@@ -14,15 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container"], function (Container) {
+define(function () {
 
-    function Editor() {
-        Container.call(this);
+    function Event(engine) {
+        this._engine = engine;
     }
 
-    Editor.prototype = Object.create(Container.prototype);
-    Editor.prototype.constructor = Editor;
+    Event.prototype = Object.create(Object.prototype);
+    Event.prototype.constructor = Event;
 
-    return Editor;
+    Event.prototype.getEngine = function () {
+        return this._engine;
+    };
+
+    return Event;
 
 });

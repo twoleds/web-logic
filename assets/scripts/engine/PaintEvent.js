@@ -14,15 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container"], function (Container) {
+define(["engine/Event"], function (Event) {
 
-    function Editor() {
-        Container.call(this);
+    /**
+     * The PaintEvent class contains information about paint event.
+     *
+     * @param {CanvasRenderingContext2D} context
+     * @constructor
+     * @public
+     */
+    function PaintEvent(engine, context) {
+        Event.call(this, engine);
+        this._context = context;
     }
 
-    Editor.prototype = Object.create(Container.prototype);
-    Editor.prototype.constructor = Editor;
+    PaintEvent.prototype = Object.create(Event.prototype);
+    PaintEvent.prototype.constructor = PaintEvent;
 
-    return Editor;
+    /**
+     * Returns a rendering context.
+     *
+     * @returns {CanvasRenderingContext2D}
+     * @public
+     */
+    PaintEvent.prototype.getContext = function () {
+        return this._context;
+    };
+
+    return PaintEvent;
 
 });

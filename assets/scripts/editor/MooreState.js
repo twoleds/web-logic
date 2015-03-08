@@ -20,6 +20,9 @@ define(["engine/Component", "machine/SignalList"], function (Component, SignalLi
         Component.call(this);
         this._name = null;
         this._output = new SignalList();
+        this._x = 100;
+        this._y = 100;
+        this._r = 25;
     }
 
     MooreState.prototype = Object.create(Component.prototype);
@@ -31,6 +34,36 @@ define(["engine/Component", "machine/SignalList"], function (Component, SignalLi
 
     MooreState.prototype.getOutput = function () {
         return this._output;
+    };
+
+    MooreState.prototype.onPaint = function (event) {
+        var ctx = event.getContext();
+
+        ctx.beginPath();
+        ctx.moveTo(this._x, this._y - this._r);
+        ctx.arcTo(this._x + this._r, this._y - this._r, this._x + this._r, this._y, this._r);
+        ctx.arcTo(this._x + this._r, this._y + this._r, this._x, this._y + this._r, this._r);
+        ctx.arcTo(this._x - this._r, this._y + this._r, this._x - this._r, this._y, this._r);
+        ctx.arcTo(this._x - this._r, this._y - this._r, this._x, this._y - this._r, this._r);
+        ctx.closePath();
+
+        ctx.fillStyle = '#fefece';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#a80036';
+        ctx.stroke();
+
+        ctx.fillStyle = '#000000';
+        ctx.font = "bold " + Math.floor(this._r * 0.75) + "px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.fillText(this._name, this._x, this._y, this._r);
+
+        ctx.font = "normal " + Math.floor(this._r * 0.5) + "px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText(this._output.toString(), this._x, this._y, this._r);
+
     };
 
     MooreState.prototype.setName = function (name) {

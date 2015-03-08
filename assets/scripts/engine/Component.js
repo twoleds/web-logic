@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(function () {
+define(["engine/Bounds"], function (Bounds) {
 
     /**
      * The Component class is base class of all graphics components.
@@ -29,6 +29,10 @@ define(function () {
 
     Component.prototype = Object.create(Object.prototype);
     Component.prototype.constructor = Component;
+
+    Component.prototype.getBounds = function () {
+        return new Bounds();
+    };
 
     /**
      * Returns parent component of this component.
@@ -47,6 +51,14 @@ define(function () {
      */
     Component.prototype.getIndex = function () {
         return this._index;
+    };
+
+    /**
+     *
+     * @param {PaintEvent} event
+     */
+    Component.prototype.onPaint = function (event) {
+        throw new Error("Override this method.");
     };
 
     /**
