@@ -31,7 +31,7 @@ define(function () {
     };
 
     Bounds.prototype.contains = function (point) {
-        return (this._x0 <= point._x) && (this._y0 <= point.y) &&
+        return (this._x0 <= point._x) && (this._y0 <= point._y) &&
             (this._x1 >= point._x) && (this._y1 >= point._y);
     };
 

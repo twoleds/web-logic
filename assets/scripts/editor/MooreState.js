@@ -28,6 +28,14 @@ define(["engine/Component", "engine/Bounds", "machine/SignalList"], function (Co
     MooreState.prototype = Object.create(Component.prototype);
     MooreState.prototype.constructor = MooreState;
 
+    MooreState.prototype.contains = function (point) {
+        var result = false;
+        if (this.getBounds().contains(point)) {
+            result = (Math.pow(point._x - this._x, 2) + Math.pow(point._y - this._y, 2)) <= Math.pow(this._r, 2);
+        }
+        return result;
+    };
+
     MooreState.prototype.getBounds = function () {
         return new Bounds(
             this._x - this._r, this._y - this._r,

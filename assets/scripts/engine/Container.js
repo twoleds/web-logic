@@ -57,6 +57,27 @@ define(["engine/Component", "engine/Bounds"], function (Component, Bounds) {
     };
 
     /**
+     * @param {Point} point
+     * @returns {null|Component}
+     */
+    Container.prototype.findByPoint = function (point) {
+        var result = null;
+        for (var i = this._children.length - 1; i >= 0; i--) {
+            var child = this._children[i];
+            if (child instanceof Container) {
+                result = child.findByPoint(point);
+                if (result !== null) {
+                    break;
+                }
+            } else if (child.contains(point)) {
+                result = child;
+                break;
+            }
+        }
+        return result;
+    };
+
+    /**
      * Returns bounds of this container.
      *
      * @returns {Bounds}
@@ -88,7 +109,7 @@ define(["engine/Component", "engine/Bounds"], function (Component, Bounds) {
      * @param {PaintEvent} event
      */
     Container.prototype.onPaint = function (event) {
-        for (var i = 0; i < this._children.length; i++) {
+        for (var i = this._children.length - 1; i >= 0; i--) {
             this._children[i].onPaint(event);
         }
     };

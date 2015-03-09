@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container", "engine/PaintEvent"], function (Container, PaintEvent) {
+define(["engine/Container", "engine/PaintEvent", "engine/Point"], function (Container, PaintEvent, Point) {
 
     function Engine(canvas) {
         this._canvas = canvas;
         this._container = new Container();
         this._init();
+
+        this._hoveredComponent = null;
+        this._focusedComponent = null;
     }
 
     Engine.prototype = Object.create(Object.prototype);
@@ -36,6 +39,13 @@ define(["engine/Container", "engine/PaintEvent"], function (Container, PaintEven
         var self = this;
 
         this._canvas.addEventListener("mousemove", function (event) {
+
+            var point = new Point(
+                event.pageX - self._canvas.offsetLeft,
+                event.pageY - self._canvas.offsetTop
+            );
+
+            var component = self._container.findByPoint(point);
 
         });
 

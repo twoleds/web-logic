@@ -32,6 +32,11 @@ define(["engine/Bounds"], function (Bounds) {
     Component.prototype = Object.create(Object.prototype);
     Component.prototype.constructor = Component;
 
+    Component.prototype.contains = function (point) {
+        console.log(this.getBounds());
+        return this.getBounds().contains(point);
+    };
+
     Component.prototype.getBounds = function () {
         return new Bounds();
     };
