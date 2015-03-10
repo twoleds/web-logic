@@ -33,7 +33,6 @@ define(["engine/Bounds"], function (Bounds) {
     Component.prototype.constructor = Component;
 
     Component.prototype.contains = function (point) {
-        console.log(this.getBounds());
         return this.getBounds().contains(point);
     };
 
@@ -78,12 +77,18 @@ define(["engine/Bounds"], function (Bounds) {
     };
 
     Component.prototype.onEnter = function (event) {
+        if (this._parent !== null) {
+            this._parent.onEnter(event);
+        }
     };
 
     Component.prototype.onFocus = function (event) {
     };
 
     Component.prototype.onLeave = function (event) {
+        if (this._parent !== null) {
+            this._parent.onLeave(event);
+        }
     };
 
     Component.prototype.onPaint = function (event) {

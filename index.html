@@ -3,7 +3,11 @@
     <head>
         <meta charset="UTF-8"/>
         <title>Logické systémy - Konečné stavové automaty</title>
+        <link rel="stylesheet" type="text/css" href="/assets/styles/bootstrap.css"/>
+        <link rel="stylesheet" type="text/css" href="/assets/styles/fontawesome.css"/>
         <script type="text/javascript" src="/assets/scripts/require.js"></script>
+        <script type="text/javascript" src="/assets/scripts/jquery.js"></script>
+        <script type="text/javascript" src="/assets/scripts/bootstrap.js"></script>
     </head>
     <body>
 
@@ -49,6 +53,17 @@
                 engine.getContainer().appendChild(c10);
 
                 engine._draw();
+
+            });
+
+            require(["dialogs/SignalDialog", "machine/Signal", "machine/SignalList"], function (SignalDialog, Signal, SignalList) {
+
+                var dialog = new SignalDialog();
+                dialog.getSignalList().append(new Signal("X1", "0", Signal.DIRECTION_INPUT));
+                dialog.getSignalList().append(new Signal("X2", "0", Signal.DIRECTION_INPUT));
+                dialog.getSignalList().append(new Signal("Y1", "0", Signal.DIRECTION_OUTPUT));
+                dialog.getSignalList().append(new Signal("Y2", "0", Signal.DIRECTION_OUTPUT));
+                dialog.show();
 
             });
 

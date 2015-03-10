@@ -16,10 +16,19 @@
 
 define(function () {
 
-    function Signal(name, value) {
+    function Signal(name, value, direction) {
         this.setName(name || "");
         this.setValue(value || 0);
+        this.setDirection(direction || Signal.DIRECTION_UNKNOWN);
     }
+
+    Signal.DIRECTION_UNKNOWN = 0;
+    Signal.DIRECTION_INPUT = 1;
+    Signal.DIRECTION_OUTPUT = 2;
+
+    Signal.prototype.getDirection = function () {
+        return this._direction;
+    };
 
     Signal.prototype.getName = function () {
         return this._name;
@@ -27,6 +36,10 @@ define(function () {
 
     Signal.prototype.getValue = function () {
         return this._value;
+    };
+
+    Signal.prototype.setDirection = function (direction) {
+        this._direction = direction;
     };
 
     Signal.prototype.setName = function (name) {

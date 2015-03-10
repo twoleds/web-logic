@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container", "engine/PaintEvent", "engine/Point"], function (Container, PaintEvent, Point) {
+define([
+    "engine/Container", "engine/MouseEvent", "engine/PaintEvent", "engine/Point"
+], function (Container, MouseEvent, PaintEvent, Point) {
 
     function Engine(canvas) {
         this._canvas = canvas;
@@ -38,15 +40,36 @@ define(["engine/Container", "engine/PaintEvent", "engine/Point"], function (Cont
     Engine.prototype._init = function () {
         var self = this;
 
-        this._canvas.addEventListener("mousemove", function (event) {
-
+        this._canvas.addEventListener("click", function (event) {
             var point = new Point(
                 event.pageX - self._canvas.offsetLeft,
                 event.pageY - self._canvas.offsetTop
             );
+            self._handleMouseClick(point);
+        });
 
-            var component = self._container.findByPoint(point);
+        this._canvas.addEventListener("mousedown", function (event) {
+            var point = new Point(
+                event.pageX - self._canvas.offsetLeft,
+                event.pageY - self._canvas.offsetTop
+            );
+            self._handleMouseDown(point);
+        });
 
+        this._canvas.addEventListener("mousemove", function (event) {
+            var point = new Point(
+                event.pageX - self._canvas.offsetLeft,
+                event.pageY - self._canvas.offsetTop
+            );
+            self._handleMouseMove(point);
+        });
+
+        this._canvas.addEventListener("mouseup", function (event) {
+            var point = new Point(
+                event.pageX - self._canvas.offsetLeft,
+                event.pageY - self._canvas.offsetTop
+            );
+            self._handleMouseUp(point);
         });
 
     };
@@ -61,6 +84,62 @@ define(["engine/Container", "engine/PaintEvent", "engine/Point"], function (Cont
 
     Engine.prototype.getContext = function () {
         return this._canvas.getContext("2d");
+    };
+
+    Engine.prototype._handleMouseClick = function (point) {
+
+        var event = new MouseEvent(this, point);
+        var component = this._container.findByPoint(point);
+
+        if (component !== null) {
+            component.onClick(event);
+        }
+
+    };
+
+    Engine.prototype._handleMouseDown = function (point) {
+
+        var event = new MouseEvent(this, point);
+        var component = this._container.findByPoint(point);
+
+        if (this._focusedComponent !== component) {
+            if (this._focusedComponent !== null) {
+                this._focusedComponent.onBlur(event);
+                this._focusedComponent = null;
+            }
+            if (component !== null) {
+                this._focusedComponent = component;
+                this._focusedComponent.onFocus(event);
+            }
+        }
+
+    };
+
+    Engine.prototype._handleMouseMove = function (point) {
+
+        var event = new MouseEvent(this, point);
+        var component = this._container.findByPoint(point);
+
+        if (this._hoveredComponent !== component) {
+            if (this._hoveredComponent !== null) {
+                this._hoveredComponent.onLeave(event);
+                this._hoveredComponent = null;
+            }
+            if (component !== null) {
+                this._hoveredComponent = component;
+                this._hoveredComponent.onEnter(event);
+            }
+        }
+
+    };
+
+    Engine.prototype._handleMouseUp = function (point) {
+
+        var event = new MouseEvent(this, point);
+        var component = this._container.findByPoint(point);
+
+
+
     };
 
     return Engine;
