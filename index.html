@@ -19,53 +19,139 @@
                 baseUrl: "/assets/scripts"
             });
 
-            require(["engine/Engine", "editor/MooreConnector", "editor/MooreState", "machine/Signal"], function (Engine, MooreConnector, MooreState, Signal) {
+            require([
+                "project/Project",
+                "project/ProjectIO",
+                "project/MooreConnector",
+                "project/MooreState",
+                "project/Signal",
+                "project/Value"
+            ], function (Project, ProjectIO, MooreConnector, MooreState, Signal, Value) {
 
-                var canvas = document.getElementById("canvas");
-                var engine = new Engine(canvas);
+                var project = new Project();
+                project.setName("My first project");
+                project.setType(Project.TYPE_MOORE);
 
-                var s0 = new MooreState();
-                s0.setName("S0");
-                s0.getOutput().append(new Signal("Y0", "0"));
-                s0.getOutput().append(new Signal("Y1", "0"));
-                s0._x = 100;
-                engine.getContainer().appendChild(s0);
+                var signalX1 = new Signal();
+                signalX1.setName("X1");
+                signalX1.setDirection(Signal.DIRECTION_INPUT);
+                project.getSignalList().append(signalX1);
 
-                var s1 = new MooreState();
-                s1.setName("S1");
-                s1.getOutput().append(new Signal("Y0", "0"));
-                s1.getOutput().append(new Signal("Y1", "1"));
-                s1._x = 200;
-                engine.getContainer().appendChild(s1);
+                var signalX2 = new Signal();
+                signalX2.setName("X2");
+                signalX2.setDirection(Signal.DIRECTION_INPUT);
+                project.getSignalList().append(signalX2);
 
-                var c00 = new MooreConnector();
-                c00.getCondition().append(new Signal("X0", "0"));
-                c00.getCondition().append(new Signal("X1", "1"));
-                c00.setSource(s0);
-                c00.setTarget(s1);
-                engine.getContainer().appendChild(c00);
+                var signalY1 = new Signal();
+                signalY1.setName("Y1");
+                signalY1.setDirection(Signal.DIRECTION_OUTPUT);
+                project.getSignalList().append(signalY1);
 
-                var c10 = new MooreConnector();
-                c10.getCondition().append(new Signal("X0", "1"));
-                c10.getCondition().append(new Signal("X1", "0"));
-                c10.setSource(s1);
-                c10.setTarget(s0);
-                engine.getContainer().appendChild(c10);
+                var signalY2 = new Signal();
+                signalY2.setName("Y2");
+                signalY2.setDirection(Signal.DIRECTION_OUTPUT);
+                project.getSignalList().append(signalY2);
 
-                engine._draw();
+                var stateS1 = new MooreState();
+                stateS1.setName("S1");
+                project.getStateList().append(stateS1);
+
+                var stateS1ValueY1 = new Value();
+                stateS1ValueY1.setName("Y1");
+                stateS1ValueY1.setValue("0");
+                stateS1.getValueList().append(stateS1ValueY1);
+
+                var stateS1ValueY2 = new Value();
+                stateS1ValueY2.setName("Y2");
+                stateS1ValueY2.setValue("1");
+                stateS1.getValueList().append(stateS1ValueY2);
+
+                var stateS2 = new MooreState();
+                stateS2.setName("S2");
+                project.getStateList().append(stateS2);
+
+                var stateS2ValueY1 = new Value();
+                stateS2ValueY1.setName("Y1");
+                stateS2ValueY1.setValue("1");
+                stateS2.getValueList().append(stateS2ValueY1);
+
+                var stateS2ValueY2 = new Value();
+                stateS2ValueY2.setName("Y2");
+                stateS2ValueY2.setValue("0");
+                stateS2.getValueList().append(stateS2ValueY2);
+
+                var connectorS1S2 = new MooreConnector();
+                connectorS1S2.setSource(stateS1.getName());
+                connectorS1S2.setTarget(stateS2.getName());
+                project.getConnectorList().append(connectorS1S2);
+
+                var connectorS2S1 = new MooreConnector();
+                connectorS2S1.setSource(stateS2.getName());
+                connectorS2S1.setTarget(stateS1.getName());
+                project.getConnectorList().append(connectorS2S1);
+
+                var connectorS2S2 = new MooreConnector();
+                connectorS2S2.setSource(stateS2.getName());
+                connectorS2S2.setTarget(stateS2.getName());
+                project.getConnectorList().append(connectorS2S2);
+
+                var connectorS1S1 = new MooreConnector();
+                connectorS1S1.setSource(stateS1.getName());
+                connectorS1S1.setTarget(stateS1.getName());
+                project.getConnectorList().append(connectorS1S1);
+
+                var json = ProjectIO.write(project);
+                console.log(json);
 
             });
 
-            require(["dialogs/SignalDialog", "machine/Signal", "machine/SignalList"], function (SignalDialog, Signal, SignalList) {
-
-                var dialog = new SignalDialog();
-                dialog.getSignalList().append(new Signal("X1", "0", Signal.DIRECTION_INPUT));
-                dialog.getSignalList().append(new Signal("X2", "0", Signal.DIRECTION_INPUT));
-                dialog.getSignalList().append(new Signal("Y1", "0", Signal.DIRECTION_OUTPUT));
-                dialog.getSignalList().append(new Signal("Y2", "0", Signal.DIRECTION_OUTPUT));
-                dialog.show();
-
-            });
+//            require(["engine/Engine", "editor/MooreConnector", "editor/MooreState", "machine/Signal"], function (Engine, MooreConnector, MooreState, Signal) {
+//
+//                var canvas = document.getElementById("canvas");
+//                var engine = new Engine(canvas);
+//
+//                var s0 = new MooreState();
+//                s0.setName("S0");
+//                s0.getOutput().append(new Signal("Y0", "0"));
+//                s0.getOutput().append(new Signal("Y1", "0"));
+//                s0._x = 100;
+//                engine.getContainer().appendChild(s0);
+//
+//                var s1 = new MooreState();
+//                s1.setName("S1");
+//                s1.getOutput().append(new Signal("Y0", "0"));
+//                s1.getOutput().append(new Signal("Y1", "1"));
+//                s1._x = 200;
+//                engine.getContainer().appendChild(s1);
+//
+//                var c00 = new MooreConnector();
+//                c00.getCondition().append(new Signal("X0", "0"));
+//                c00.getCondition().append(new Signal("X1", "1"));
+//                c00.setSource(s0);
+//                c00.setTarget(s1);
+//                engine.getContainer().appendChild(c00);
+//
+//                var c10 = new MooreConnector();
+//                c10.getCondition().append(new Signal("X0", "1"));
+//                c10.getCondition().append(new Signal("X1", "0"));
+//                c10.setSource(s1);
+//                c10.setTarget(s0);
+//                engine.getContainer().appendChild(c10);
+//
+//                engine._draw();
+//
+//            });
+//
+//            require(["dialogs/SignalDialog", "machine/Signal", "machine/SignalList"], function (SignalDialog, Signal, SignalList) {
+//
+//                var dialog = new SignalDialog();
+//                dialog.getSignalList().append(new Signal("X1", "0", Signal.DIRECTION_INPUT));
+//                dialog.getSignalList().append(new Signal("X2", "0", Signal.DIRECTION_INPUT));
+//                dialog.getSignalList().append(new Signal("Y1", "0", Signal.DIRECTION_OUTPUT));
+//                dialog.getSignalList().append(new Signal("Y2", "0", Signal.DIRECTION_OUTPUT));
+//                dialog.show();
+//
+//            });
 
         </script>
 

@@ -14,19 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container"], function (Container) {
+define(function () {
 
-    function Editor() {
-        Container.call(this);
+    function Signal() {
+        this._name = '';
+        this._direction = Signal.DIRECTION_UNKNOWN;
     }
 
-    Editor.TYPE_UNKNOWN = 0;
-    Editor.TYPE_MOORE = 1;
-    Editor.TYPE_MEALY = 2;
+    Signal.DIRECTION_UNKNOWN = "unknown";
+    Signal.DIRECTION_INPUT = "input";
+    Signal.DIRECTION_OUTPUT = "output";
 
-    Editor.prototype = Object.create(Container.prototype);
-    Editor.prototype.constructor = Editor;
+    Signal.prototype.getDirection = function () {
+        return this._direction;
+    };
 
-    return Editor;
+    Signal.prototype.getName = function () {
+        return this._name;
+    };
+
+    Signal.prototype.setDirection = function (direction) {
+        this._direction = direction;
+    };
+
+    Signal.prototype.setName = function (name) {
+        this._name = name;
+    };
+
+    return Signal;
 
 });

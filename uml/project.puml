@@ -1,0 +1,89 @@
+@startuml
+
+class Project <<final>> {
+    - _connectors: Connector[]
+    - _name: String
+    - _signalList: SignalList
+    - _states: State[]
+    + {static} Project()
+    + getConnectors(): Connector[]
+    + getName(): String
+    + getSignalList(): SignalList
+    + getStates(): State[]
+    + setName(name: String)
+}
+
+class State <<abstract>> {
+    - _name: String
+    + {static} State()
+    + getName(): String
+    + setName(name: String)
+}
+
+class MealyState <<final>> extends State {
+    + {static} MealyState()
+}
+
+class MooreState <<final>> extends State {
+    - _signalList: SignalList
+    + {static} MooreState()
+    + getSignalList(): SignalList
+}
+
+class Connector <<abstract>> {
+    - _source: State
+    - _target: State
+    + {static} Connector()
+    + getSource(): State
+    + getTarget(): State
+    + setSource(source: State)
+    + setTarget(target: State)
+}
+
+class MealyConnector <<final>> extends Connector {
+    - _signalList: SignalList
+    + {static} MealyConnector()
+    + getSignalList(): SignalList
+}
+
+class MooreConnector <<final>> extends Connector {
+    + {static} MooreConnector()
+}
+
+class SignalList <<final>> {
+    - _signals: Signal[]
+    + {static} SignalList()
+    + append(signal: Signal)
+    + clear()
+    + get(index: Number): Signal
+    + getByName(name: String): Signal
+    + length(): Number
+    + remove(signal: Signal)
+    + toString(): String
+}
+
+class Signal <<final>> {
+    + {static} DIRECTION_UNKNOWN = 0
+    + {static} DIRECTION_INPUT = 1
+    + {static} DIRECTION_OUTPUT = 2
+    - _direction: Number
+    - _name: String
+    - _value: String
+    + {static} Signal()
+    + getDirection(): Number
+    + getName(): String
+    + getValue(): String
+    + setDirection(direction: Number)
+    + setName(name: String)
+    + setValue(value: String)
+}
+
+Connector --* Project
+Connector --o State
+Signal --* SignalList
+SignalList --* MealyConnector
+SignalList --* MooreState
+SignalList --* Project
+State --* Project
+
+@enduml

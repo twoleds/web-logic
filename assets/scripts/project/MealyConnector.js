@@ -14,19 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container"], function (Container) {
+define([
+    "project/Connector",
+    "project/MealyState",
+    "project/ValueList"
+], function (Connector, MealyState, ValueList) {
 
-    function Editor() {
-        Container.call(this);
+    function MealyConnector() {
+        Connector.call(this);
+        this._valueList = new ValueList();
     }
 
-    Editor.TYPE_UNKNOWN = 0;
-    Editor.TYPE_MOORE = 1;
-    Editor.TYPE_MEALY = 2;
+    MealyConnector.prototype = Object.create(Connector.prototype);
+    MealyConnector.prototype.constructor = MealyConnector;
 
-    Editor.prototype = Object.create(Container.prototype);
-    Editor.prototype.constructor = Editor;
+    MealyConnector.prototype.getValueList = function () {
+        return this._valueList;
+    };
 
-    return Editor;
+    return MealyConnector;
 
 });

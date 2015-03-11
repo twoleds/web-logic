@@ -14,19 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container"], function (Container) {
+define([
+    "project/State",
+    "project/ValueList"
+], function (State, ValueList) {
 
-    function Editor() {
-        Container.call(this);
+    function MooreState() {
+        State.call(this);
+        this._valueList = new ValueList();
     }
 
-    Editor.TYPE_UNKNOWN = 0;
-    Editor.TYPE_MOORE = 1;
-    Editor.TYPE_MEALY = 2;
+    MooreState.prototype = Object.create(State.prototype);
+    MooreState.prototype.constructor = MooreState;
 
-    Editor.prototype = Object.create(Container.prototype);
-    Editor.prototype.constructor = Editor;
+    MooreState.prototype.getValueList = function () {
+        return this._valueList;
+    };
 
-    return Editor;
+    return MooreState;
 
 });

@@ -14,19 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container"], function (Container) {
+define(function () {
 
-    function Editor() {
-        Container.call(this);
+    function State() {
+        this._name = '';
     }
 
-    Editor.TYPE_UNKNOWN = 0;
-    Editor.TYPE_MOORE = 1;
-    Editor.TYPE_MEALY = 2;
+    State.prototype = Object.create(State.prototype);
+    State.prototype.constructor = State;
 
-    Editor.prototype = Object.create(Container.prototype);
-    Editor.prototype.constructor = Editor;
+    State.prototype.getName = function () {
+        return this._name;
+    };
 
-    return Editor;
+    State.prototype.setName = function (name) {
+        if (typeof name !== "string") {
+            throw new Error("Invalid type of state name.");
+        }
+        this._name = name;
+    };
+
+    return State;
 
 });

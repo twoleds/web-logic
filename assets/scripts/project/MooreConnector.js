@@ -14,19 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container"], function (Container) {
+define([
+    "project/Connector",
+    "project/MooreState"
+], function (Connector, MooreState) {
 
-    function Editor() {
-        Container.call(this);
+    function MooreConnector() {
+        Connector.call(this);
     }
 
-    Editor.TYPE_UNKNOWN = 0;
-    Editor.TYPE_MOORE = 1;
-    Editor.TYPE_MEALY = 2;
+    MooreConnector.prototype = Object.create(Connector.prototype);
+    MooreConnector.prototype.constructor = MooreConnector;
 
-    Editor.prototype = Object.create(Container.prototype);
-    Editor.prototype.constructor = Editor;
-
-    return Editor;
+    return MooreConnector;
 
 });
