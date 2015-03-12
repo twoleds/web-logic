@@ -24,11 +24,24 @@ define([
     "project/Signal",
     "project/SignalList",
     "project/StateList",
-    "project/Value"
+    "project/Value",
+    "project/ValueList"
 ], function (ConnectorList, MealyConnector, MealyState, MooreConnector,
-             MooreState, Project, Signal, SignalList, StateList, Value) {
+             MooreState, Project, Signal, SignalList, StateList, Value,
+             ValueList) {
 
     var ProjectIO = {};
+
+    ProjectIO._readConditionList = function (json, conditionList) {
+        if (typeof json !== "object" || !json instanceof Array) {
+            throw new Error("Invalid type of condition list.");
+        }
+        for (var i = 0; i < json.length; i++) {
+            var valueList = new ValueList();
+            this._readValueList(json[i], valueList);
+            conditionList.append(valueList);
+        }
+    };
 
     ProjectIO._readConnector = function (json) {
         var connector;
@@ -46,6 +59,7 @@ define([
             default:
                 throw new Error("Unknown type of connector.");
         }
+        this._readConditionList(json.conditions, connector.getConditionList());
         connector.setSource(json.source);
         connector.setTarget(json.target);
         return connector;
@@ -133,8 +147,19 @@ define([
         return valueList;
     };
 
+    ProjectIO._writeConditionList = function (conditionList) {
+        var json = [];
+        for (var i = 0, c = conditionList.length(); i < c; i++) {
+            json.push(this._writeValueList(conditionList.get(i)));
+        }
+        return json;
+    };
+
     ProjectIO._writeConnector = function (connector) {
         var json = {};
+        json.conditions = this._writeConditionList(
+            connector.getConditionList()
+        );
         json.source = connector.getSource();
         json.target = connector.getTarget();
         if (connector instanceof MealyConnector) {

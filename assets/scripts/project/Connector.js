@@ -14,15 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["project/State"], function (State) {
+define([
+    "project/ConditionList"
+], function (ConditionList) {
 
     function Connector() {
+        this._conditionList = new ConditionList();
         this._source = '';
         this._target = '';
     }
 
     Connector.prototype = Object.create(Object.prototype);
     Connector.prototype.constructor = Connector;
+
+    Connector.prototype.getConditionList = function () {
+        return this._conditionList;
+    };
 
     Connector.prototype.getSource = function () {
         return this._source;

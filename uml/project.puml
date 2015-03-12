@@ -1,15 +1,15 @@
 @startuml
 
 class Project <<final>> {
-    - _connectors: Connector[]
+    - _connectorList: ConnectorList
     - _name: String
     - _signalList: SignalList
-    - _states: State[]
+    - _stateList: StateList
     + {static} Project()
-    + getConnectors(): Connector[]
+    + getConnectorList(): ConnectorList
     + getName(): String
     + getSignalList(): SignalList
-    + getStates(): State[]
+    + getStateList: StateList
     + setName(name: String)
 }
 
@@ -25,15 +25,17 @@ class MealyState <<final>> extends State {
 }
 
 class MooreState <<final>> extends State {
-    - _signalList: SignalList
+    - _valueList: ValueList
     + {static} MooreState()
-    + getSignalList(): SignalList
+    + getValueList(): ValueList
 }
 
 class Connector <<abstract>> {
+    - _conditionList: ConditionList
     - _source: State
     - _target: State
     + {static} Connector()
+    + getConditionList(): ConditionList
     + getSource(): State
     + getTarget(): State
     + setSource(source: State)
@@ -41,25 +43,20 @@ class Connector <<abstract>> {
 }
 
 class MealyConnector <<final>> extends Connector {
-    - _signalList: SignalList
+    - _valueList: ValueList
     + {static} MealyConnector()
-    + getSignalList(): SignalList
+    + getValueList(): ValueList
 }
 
 class MooreConnector <<final>> extends Connector {
     + {static} MooreConnector()
 }
 
-class SignalList <<final>> {
-    - _signals: Signal[]
+class SignalList <<final>> extends List {
     + {static} SignalList()
     + append(signal: Signal)
-    + clear()
-    + get(index: Number): Signal
     + getByName(name: String): Signal
-    + length(): Number
     + remove(signal: Signal)
-    + toString(): String
 }
 
 class Signal <<final>> {
@@ -68,22 +65,74 @@ class Signal <<final>> {
     + {static} DIRECTION_OUTPUT = 2
     - _direction: Number
     - _name: String
-    - _value: String
     + {static} Signal()
     + getDirection(): Number
     + getName(): String
     + getValue(): String
     + setDirection(direction: Number)
     + setName(name: String)
-    + setValue(value: String)
 }
 
-Connector --* Project
-Connector --o State
-Signal --* SignalList
-SignalList --* MealyConnector
-SignalList --* MooreState
+class Value <<final>> {
+    - _name: String
+    - _value: String
+    + {static} Value()
+    + getName(): String
+    + getValue(): String
+    + setName(name: String)
+    + setValue(name: String)
+}
+
+class List <<abstract>> {
+    - _items
+    + append(item: Object)
+    + clear()
+    + get(index: Number): Object
+    + length(): Number
+    + remove(item: Object)
+}
+
+class ValueList <<final>> extends List {
+    + {static} ValueList()
+    + append(value: Value)
+    + getByName(name: String): Value
+    + remove(value: Value)
+}
+
+class ProjectIO <<static>> {
+    + {static} read(json: String): Project
+    + {static} write(project: Project): String
+}
+
+class ConnectorList <<final>> extends List {
+    + {static} ConnectorList()
+    + append(connector: Connector)
+    + remove(connector: Connector)
+}
+
+class ConditionList <<final>> extends List {
+    + {static} ConditionList()
+    + append(valueList: ValueList)
+    + remove(valueList: ValueList)
+}
+
+class StateList <<final>> extends List {
+    + {static} StateList()
+    + append(state: State)
+    + getByName(name: String): State
+    + remove(state: State)
+}
+
+ConnectorList --* Project
+Connector --* ConnectorList
+StateList --* Project
+State --* StateList
 SignalList --* Project
-State --* Project
+Signal --* SignalList
+ConditionList --* Connector
+ValueList --* ConditionList
+ValueList --* MealyConnector
+ValueList --* MooreState
+Value --* ValueList
 
 @enduml
