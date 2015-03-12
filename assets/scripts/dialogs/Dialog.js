@@ -18,10 +18,13 @@ define(function () {
 
     function Dialog() {
         this._dialog = null;
+        this._id = ++Dialog._lastId;
     }
 
     Dialog.prototype = Object.create(Dialog.prototype);
     Dialog.prototype.constructor = Dialog;
+
+    Dialog._lastId = 0;
 
     Dialog.prototype._init = function (root) {
     };
@@ -56,19 +59,19 @@ define(function () {
         this._init(dialog);
 
         this._dialog = jQuery(container);
-        this._dialog .bind('show.bs.modal', function () {
+        this._dialog.bind('show.bs.modal', function () {
             self.onBeforeShow();
         });
-        this._dialog .bind('shown.bs.modal', function () {
+        this._dialog.bind('shown.bs.modal', function () {
             self.onAfterShow();
         });
-        this._dialog .bind('hide.bs.modal', function () {
+        this._dialog.bind('hide.bs.modal', function () {
             self.onBeforeHide();
         });
-        this._dialog .bind('hidden.bs.modal', function () {
+        this._dialog.bind('hidden.bs.modal', function () {
             self.onAfterHide();
         });
-        this._dialog .modal({
+        this._dialog.modal({
             backdrop: 'static',
             keyboard: true,
             show: true
