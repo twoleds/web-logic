@@ -1,115 +1,65 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Logické systémy - Konečné stavové automaty</title>
-        <link rel="stylesheet" type="text/css" href="/assets/styles/bootstrap.css"/>
-        <link rel="stylesheet" type="text/css" href="/assets/styles/bootstrap-select.css"/>
-        <link rel="stylesheet" type="text/css" href="/assets/styles/fontawesome.css"/>
-        <script type="text/javascript" src="/assets/scripts/jquery.js"></script>
-        <script type="text/javascript" src="/assets/scripts/bootstrap.js"></script>
-        <script type="text/javascript" src="/assets/scripts/bootstrap-select.js"></script>
-        <script type="text/javascript" src="/assets/scripts/require.js"></script>
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Logické systémy - Konečné stavové automaty</title>
+    <link rel="stylesheet" type="text/css" href="/assets/styles/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/styles/bootstrap-select.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/styles/fontawesome.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/styles/logic.css"/>
+    <script type="text/javascript" src="/assets/scripts/jquery.js"></script>
+    <script type="text/javascript" src="/assets/scripts/bootstrap.js"></script>
+    <script type="text/javascript" src="/assets/scripts/bootstrap-select.js"></script>
+    <script type="text/javascript" src="/assets/scripts/require.js" data-main="/assets/scripts/logic.js"></script>
+</head>
+<body>
 
-        <canvas id="canvas" width="640" height="480"></canvas>
+    <div style="position: fixed; width: 100%; height: 100%;">
+        <div class="logic-editor">
+            <div class="logic-content"></div>
+            <div class="logic-toolbar">
 
-        <script type="text/javascript">
+                <div class="btn-group">
+                    <button class="btn btn-default">
+                        <i class="fa fa-file fa-fw"></i>
+                    </button>
+                    <button class="btn btn-default">
+                        <i class="fa fa-folder-open fa-fw"></i>
+                    </button>
+                    <button class="btn btn-default">
+                        <i class="fa fa-save fa-fw"></i>
+                    </button>
+                    <button class="btn btn-default">
+                        <i class="fa fa-cogs fa-fw"></i>
+                    </button>
+                </div>
 
-            require.config({
-                baseUrl: "/assets/scripts"
-            });
+                <div class="btn-group">
+                    <button class="btn btn-default active">
+                        <i class="fa fa-edit fa-fw"></i>
+                    </button>
+                    <button class="btn btn-default">
+                        <i class="fa fa-flask fa-fw"></i>
+                    </button>
+                </div>
 
-            require([
-                "dialogs/ProjectDialog",
-                "project/Project",
-                "project/Signal"
-            ], function (ProjectDialog, Project, Signal) {
+                <div class="btn-group">
+                    <button class="btn btn-default">
+                        <i class="fa fa-circle-o fa-fw"></i>
+                    </button>
+                    <button class="btn btn-default">
+                        <i class="fa fa-long-arrow-right fa-fw"></i>
+                    </button>
+                    <button class="btn btn-default" disabled>
+                        <i class="fa fa-list-alt fa-fw"></i>
+                    </button>
+                </div>
 
-                var p = new Project();
-                p.setName("My first project");
-                p.setType(Project.TYPE_MOORE);
+            </div>
+            <div class="logic-status">Toto je status bar.</div>
+        </div>
+    </div>
 
-                var s = new Signal();
-                s.setName('X1');
-                s.setDirection(Signal.DIRECTION_INPUT);
-                p.getSignalList().append(s);
-
-                s = new Signal();
-                s.setName('X2');
-                s.setDirection(Signal.DIRECTION_INPUT);
-                p.getSignalList().append(s);
-
-                s = new Signal();
-                s.setName('Y1');
-                s.setDirection(Signal.DIRECTION_OUTPUT);
-                p.getSignalList().append(s);
-
-                s = new Signal();
-                s.setName('Y2');
-                s.setDirection(Signal.DIRECTION_OUTPUT);
-                p.getSignalList().append(s);
-
-                s = new Signal();
-                s.setName('Y3');
-                s.setDirection(Signal.DIRECTION_OUTPUT);
-                p.getSignalList().append(s);
-
-                var pd = new ProjectDialog(p);
-                pd.show();
-            });
-
-//            require(["engine/Engine", "editor/MooreConnector", "editor/MooreState", "machine/Signal"], function (Engine, MooreConnector, MooreState, Signal) {
-//
-//                var canvas = document.getElementById("canvas");
-//                var engine = new Engine(canvas);
-//
-//                var s0 = new MooreState();
-//                s0.setName("S0");
-//                s0.getOutput().append(new Signal("Y0", "0"));
-//                s0.getOutput().append(new Signal("Y1", "0"));
-//                s0._x = 100;
-//                engine.getContainer().appendChild(s0);
-//
-//                var s1 = new MooreState();
-//                s1.setName("S1");
-//                s1.getOutput().append(new Signal("Y0", "0"));
-//                s1.getOutput().append(new Signal("Y1", "1"));
-//                s1._x = 200;
-//                engine.getContainer().appendChild(s1);
-//
-//                var c00 = new MooreConnector();
-//                c00.getCondition().append(new Signal("X0", "0"));
-//                c00.getCondition().append(new Signal("X1", "1"));
-//                c00.setSource(s0);
-//                c00.setTarget(s1);
-//                engine.getContainer().appendChild(c00);
-//
-//                var c10 = new MooreConnector();
-//                c10.getCondition().append(new Signal("X0", "1"));
-//                c10.getCondition().append(new Signal("X1", "0"));
-//                c10.setSource(s1);
-//                c10.setTarget(s0);
-//                engine.getContainer().appendChild(c10);
-//
-//                engine._draw();
-//
-//            });
-//
-//            require(["dialogs/SignalDialog", "machine/Signal", "machine/SignalList"], function (SignalDialog, Signal, SignalList) {
-//
-//                var dialog = new SignalDialog();
-//                dialog.getSignalList().append(new Signal("X1", "0", Signal.DIRECTION_INPUT));
-//                dialog.getSignalList().append(new Signal("X2", "0", Signal.DIRECTION_INPUT));
-//                dialog.getSignalList().append(new Signal("Y1", "0", Signal.DIRECTION_OUTPUT));
-//                dialog.getSignalList().append(new Signal("Y2", "0", Signal.DIRECTION_OUTPUT));
-//                dialog.show();
-//
-//            });
-
-        </script>
-
-    </body>
+</body>
 </html>

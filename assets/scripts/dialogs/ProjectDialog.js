@@ -22,75 +22,58 @@ define([
 
     function ProjectDialog(project) {
         Dialog.call(this);
+
+        this.setIcon("fa fa-cogs fa-fw");
+        this.setTitle("Nastavenia projektu");
+
         this._project = project || new Project();
-        this._signalId = 0;
     }
 
     ProjectDialog.prototype = Object.create(Dialog.prototype);
     ProjectDialog.prototype.constructor = ProjectDialog;
 
-    ProjectDialog.prototype._init = function (root) {
+    ProjectDialog.prototype._initBody = function (root) {
         var self = this;
 
         root.innerHTML = '\
-            <div class="modal-content">\
-                <div class="modal-header">\
-                    <button class="close" data-dismiss="modal">\
-                        <i class="fa fa-close fa-fw"></i>\
-                    </button>\
-                    <h4 class="modal-title">\
-                        <i class="fa fa-cogs"></i> Nastavenia projektu\
-                    </h4>\
-                </div>\
-                <div class="modal-body">\
-                    <div class="row">\
-                        <div class="col-xs-8">\
-                            <div class="form-group">\
-                                <label>Názov projektu</label>\
-                                <input id="dialog-' + this._id + '-project-name" class="form-control" type="text" value="" />\
-                            </div>\
-                        </div>\
-                        <div class="col-xs-4">\
-                            <div class="form-group">\
-                                <label>Typ</label>\
-                                <select id="dialog-' + this._id + '-project-type" class="form-control show-tick">\
-                                    <option value="' + Project.TYPE_MEALY + '">\
-                                        Mealyho automat\
-                                    </option>\
-                                    <option value="' + Project.TYPE_MOORE + '" selected>\
-                                        Moorov automat\
-                                    </option>\
-                                </select>\
-                            </div>\
-                        </div>\
-                    </div>\
-                    <div class="panel panel-default">\
-                        <div class="panel-heading">\
-                            <strong>Zoznam signálov</strong>\
-                        </div>\
-                        <div class="panel-body">\
-                            <table class="table table-hover table-striped" id="dialog-' + this._id + '-signal-table">\
-                                <thead>\
-                                    <tr>\
-                                        <th style="width: 50%;">Názov</th>\
-                                        <th style="width: 50%;">Typ</th>\
-                                        <th></th>\
-                                    </tr>\
-                                </thead>\
-                                <tbody></tbody>\
-                            </table>\
-                            <button class="btn btn-success pull-right" id="dialog-' + this._id + '-signal-new">\
-                                <i class="fa fa-plus fa-fw"></i> <strong>Pridať signál</strong>\
-                            </button>\
-                        </div>\
+            <div class="row">\
+                <div class="col-xs-8">\
+                    <div class="form-group">\
+                        <label>Názov projektu</label>\
+                        <input id="dialog-' + this._id + '-project-name" class="form-control" type="text" value="" />\
                     </div>\
                 </div>\
-                <div class="modal-footer">\
-                    <button class="btn btn-default" data-dismiss="modal">\
-                        <i class="fa fa-close fa-fw"></i> Zrusiť\
-                    </button>\
-                    <button class="btn btn-primary">\
-                        <i class="fa fa-check fa-fw"></i> Potvrdiť zmeny\
+                <div class="col-xs-4">\
+                    <div class="form-group">\
+                        <label>Typ automatu</label>\
+                        <select id="dialog-' + this._id + '-project-type" class="form-control show-tick">\
+                            <option value="' + Project.TYPE_MEALY + '">\
+                                Mealyho automat\
+                            </option>\
+                            <option value="' + Project.TYPE_MOORE + '" selected>\
+                                Moorov automat\
+                            </option>\
+                        </select>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="panel panel-default">\
+                <div class="panel-heading">\
+                    <strong>Zoznam signálov</strong>\
+                </div>\
+                <div class="panel-body">\
+                    <table class="table table-hover table-striped" id="dialog-' + this._id + '-signal-table">\
+                        <thead>\
+                            <tr>\
+                                <th style="width: 50%;">Názov</th>\
+                                <th style="width: 50%;">Typ</th>\
+                                <th></th>\
+                            </tr>\
+                        </thead>\
+                        <tbody></tbody>\
+                    </table>\
+                    <button class="btn btn-success pull-right" id="dialog-' + this._id + '-signal-new">\
+                        <i class="fa fa-plus fa-fw"></i> <strong>Pridať signál</strong>\
                     </button>\
                 </div>\
             </div>\
@@ -141,10 +124,28 @@ define([
 
     };
 
+    ProjectDialog.prototype.getProject = function () {
+        return this._project;
+    };
+
+    ProjectDialog.prototype.setProject = function (project) {
+        if (project instanceof Project === false) {
+            throw new Error("Invalid type of project.");
+        }
+        this._project = project;
+    };
+
     ProjectDialog.prototype.onBeforeShow = function () {
 
         $('#dialog-' + this._id + '-project-name').val(this._project.getName());
-        $('#dialog-' + this._id + '-project-type').val(this._project.getType()).selectpicker('refresh');
+
+        var $type = $('#dialog-' + this._id + '-project-type');
+        $type.val(this._project.getType());
+        $type.prop(
+            'disabled',
+            this._project.getType() !== Project.TYPE_UNKNOWN
+        );
+        $type.selectpicker('refresh');
 
         this._clearSignals();
         var signalList = this._project.getSignalList();
@@ -152,6 +153,39 @@ define([
             var signal = signalList.get(i);
             this._newSignal(signal.getName(), signal.getDirection());
         }
+
+    };
+
+    ProjectDialog.prototype.onConfirm = function () {
+        var project = this._project;
+
+        project.setName($('#dialog-' + this._id + '-project-name').val());
+        project.setType($('#dialog-' + this._id + '-project-type').val());
+
+        project.getSignalList().clear();
+        var signals = $('#dialog-' + this._id + '-signal-table tbody tr');
+        signals.each(function () {
+            var name = $(this).find('input[type=text]').val();
+            var type = $(this).find('select').val();
+            if (name !== "" && type === Signal.DIRECTION_INPUT) {
+                var signal = new Signal();
+                signal.setName(name);
+                signal.setDirection(type);
+                project.getSignalList().append(signal);
+            }
+        });
+        signals.each(function () {
+            var name = $(this).find('input[type=text]').val();
+            var type = $(this).find('select').val();
+            if (name !== "" && type === Signal.DIRECTION_OUTPUT) {
+                var signal = new Signal();
+                signal.setName(name);
+                signal.setDirection(type);
+                project.getSignalList().append(signal);
+            }
+        });
+
+        this.hide();
 
     };
 
