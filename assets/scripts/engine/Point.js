@@ -24,6 +24,12 @@ define([], function () {
     Point.prototype = Object.create(Object.prototype);
     Point.prototype.constructor = Point;
 
+    Point.prototype.add = function (p) {
+        this.x += p.x;
+        this.y += p.y;
+        return this;
+    };
+
     Point.prototype.clone = function () {
         return new Point(this.x, this.y);
     };
@@ -65,6 +71,12 @@ define([], function () {
     Point.prototype.scale = function (sx, sy) {
         this.x *= sx;
         this.y *= sy;
+        return this;
+    };
+
+    Point.prototype.sub = function (p) {
+        this.x -= p.x;
+        this.y -= p.y;
         return this;
     };
 

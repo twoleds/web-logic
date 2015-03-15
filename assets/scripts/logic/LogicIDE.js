@@ -16,9 +16,10 @@
 
 define([
     "engine/Engine",
+    "editor/Editor",
     "logic/Toolbar",
     "project/Project"
-], function (Engine, Toolbar, Project) {
+], function (Engine, Editor, Toolbar, Project) {
 
     function LogicIDE(container) {
         this._container = container;
@@ -79,9 +80,19 @@ define([
     LogicIDE.prototype._changeModeToEditor = function () {
         this._content.innerHTML = '';
         var canvas = document.createElement("canvas");
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.width = this._content.offsetWidth;
+        canvas.height = this._content.offsetHeight;
         this._content.appendChild(canvas);
         this._toolbar._modeEditor.classList.add("active");
         this._toolbar._editorGroup.classList.remove("hidden");
+
+        this._engine = new Engine(canvas);
+        this._engineCtx = new Editor(this._project);
+        this._engine.getContainer().appendChild(this._engineCtx);
+        this._engine._handlePaint();
+
     };
 
     LogicIDE.prototype._changeModeToSimulator = function () {

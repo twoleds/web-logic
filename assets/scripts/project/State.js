@@ -20,7 +20,6 @@ define(function () {
         this._name = '';
         this._x = 0;
         this._y = 0;
-        this._z = 0;
     }
 
     State.prototype = Object.create(State.prototype);
@@ -38,10 +37,6 @@ define(function () {
         return this._y;
     };
 
-    State.prototype.getZ = function () {
-        return this._z;
-    };
-
     State.prototype.setName = function (name) {
         if (typeof name !== "string") {
             throw new Error("Invalid type of state name.");
@@ -49,19 +44,15 @@ define(function () {
         this._name = name;
     };
 
-    State.prototype.setXYZ = function (x, y, z) {
+    State.prototype.setXY = function (x, y) {
         if (typeof x !== "number") {
             throw new Error("Invalid type of argument.");
         }
         if (typeof y !== "number") {
             throw new Error("Invalid type of argument.");
         }
-        if (typeof z !== "number") {
-            throw new Error("Invalid type of argument.");
-        }
         this._x = x;
         this._y = y;
-        this._z = z;
     };
 
     return State;

@@ -126,23 +126,53 @@ define([
         this._editorGroup.classList.add("hidden");
         this._toolbar.appendChild(this._editorGroup);
 
-        var editorState = document.createElement("button");
-        editorState.classList.add("btn");
-        editorState.classList.add("btn-default");
-        editorState.innerHTML = '<i class="fa fa-circle-o fa-fw"></i>';
-        editorState.addEventListener('mouseover', function () {
+        this._editorState = document.createElement("button");
+        this._editorState.classList.add("btn");
+        this._editorState.classList.add("btn-default");
+        this._editorState.innerHTML = '<i class="fa fa-circle-o fa-fw"></i>';
+        this._editorState.addEventListener('click', function () {
+            self._ide._engineCtx._stateNew();
+        });
+        this._editorState.addEventListener('mouseover', function () {
             self._ide.showStatus("Vytvorí nový stav");
         });
-        this._editorGroup.appendChild(editorState);
+        this._editorGroup.appendChild(this._editorState);
 
-        var editorConnector = document.createElement("button");
-        editorConnector.classList.add("btn");
-        editorConnector.classList.add("btn-default");
-        editorConnector.innerHTML = '<i class="fa fa-long-arrow-right fa-fw"></i>';
-        editorState.addEventListener('mouseover', function () {
+        this._editorConnector = document.createElement("button");
+        this._editorConnector.classList.add("btn");
+        this._editorConnector.classList.add("btn-default");
+        this._editorConnector.innerHTML = '<i class="fa fa-long-arrow-right fa-fw"></i>';
+        this._editorConnector.addEventListener('click', function () {
+            self._ide._engineCtx._connectorNew();
+        });
+        this._editorConnector.addEventListener('mouseover', function () {
             self._ide.showStatus("Vytvorí nový prechod");
         });
-        this._editorGroup.appendChild(editorConnector);
+        this._editorGroup.appendChild(this._editorConnector);
+
+        this._editorConfig = document.createElement("button");
+        this._editorConfig.classList.add("btn");
+        this._editorConfig.classList.add("btn-default");
+        this._editorConfig.innerHTML = '<i class="fa fa-list-alt fa-fw"></i>';
+        this._editorConfig.addEventListener('click', function () {
+            self._ide._engineCtx._objectEdit();
+        });
+        this._editorConfig.addEventListener('mouseover', function () {
+            self._ide.showStatus("Upraviť vlastnosti objektu");
+        });
+        this._editorGroup.appendChild(this._editorConfig);
+
+        this._editorRemove = document.createElement("button");
+        this._editorRemove.classList.add("btn");
+        this._editorRemove.classList.add("btn-default");
+        this._editorRemove.innerHTML = '<i class="fa fa-remove fa-fw"></i>';
+        this._editorRemove.addEventListener('click', function () {
+            self._ide._engineCtx._objectRemove();
+        });
+        this._editorRemove.addEventListener('mouseover', function () {
+            self._ide.showStatus("Odstrániť objekt");
+        });
+        this._editorGroup.appendChild(this._editorRemove);
 
     };
 

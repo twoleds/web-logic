@@ -15,8 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "engine/Container", "engine/MouseEvent", "engine/PaintEvent", "engine/Point"
-], function (Container, MouseEvent, PaintEvent, Point) {
+    "engine/Bounds",
+    "engine/Container",
+    "engine/MouseEvent",
+    "engine/PaintEvent",
+    "engine/Point"
+], function (Bounds, Container, MouseEvent, PaintEvent, Point) {
 
     function Engine(canvas) {
         var self = this;
@@ -28,8 +32,13 @@ define([
             return self;
         };
 
-        this._hoveredComponent = null;
+        this._wasDragStarted = false;
+        this._draggedComponent = null;
+        this._dragEvent = null;
         this._focusedComponent = null;
+        this._hoveredComponent = null;
+        this._updateRequest = null;
+        this._mousePoint = new Point(0, 0);
 
         this._init();
     }
@@ -79,6 +88,34 @@ define([
             self._handleMouseUp(point);
         });
 
+        this._canvas.addEventListener("touchstart", function (event) {
+            var touch = event.touches[0];
+            var point = new Point(
+                touch.pageX - self._canvas.offsetLeft,
+                touch.pageY - self._canvas.offsetTop
+            );
+            self._mousePoint = point;
+            self._handleMouseDown(point);
+        });
+
+        this._canvas.addEventListener("touchend", function (event) {
+            self._handleMouseUp(self._mousePoint);
+        });
+
+        this._canvas.addEventListener("touchmove", function (event) {
+            var touch = event.touches[0];
+            var point = new Point(
+                touch.pageX - self._canvas.offsetLeft,
+                touch.pageY - self._canvas.offsetTop
+            );
+            self._mousePoint = point;
+            self._handleMouseMove(point);
+        });
+
+        this._canvas.addEventListener("selectstart", function (event) {
+            event.preventDefault();
+        });
+
     };
 
     Engine.prototype.getCanvas = function () {
@@ -93,6 +130,14 @@ define([
         return this._canvas.getContext("2d");
     };
 
+    Engine.prototype.getFocusedComponent = function () {
+        return this._focusedComponent;
+    };
+
+    Engine.prototype.getHoveredComponent = function () {
+        return this._hoveredComponent;
+    };
+
     Engine.prototype._handleMouseClick = function (point) {
 
         var component = this._container.findByPoint(point);
@@ -100,6 +145,7 @@ define([
 
         if (component !== null) {
             component.onClick(event);
+            this.update();
         }
 
     };
@@ -111,14 +157,25 @@ define([
 
         if (this._focusedComponent !== component) {
             if (this._focusedComponent !== null) {
+                this._focusedComponent._focused = false;
                 this._focusedComponent.onBlur(event);
                 this._focusedComponent = null;
             }
-            if (component !== null) {
+            if (component !== null && component.isFocusable()) {
                 this._focusedComponent = component;
+                this._focusedComponent._focused = true;
                 this._focusedComponent.onFocus(event);
             }
+            this.update();
         }
+
+        if (component !== null && component.isDraggable()) {
+            this._draggedComponent = component;
+            this._wasDragStarted = false;
+            this._dragEvent = event;
+            this.update();
+        }
+        this.update();
 
     };
 
@@ -127,15 +184,25 @@ define([
         var component = this._container.findByPoint(point);
         var event = new MouseEvent(this, point, component);
 
-        if (this._hoveredComponent !== component) {
+        if (this._draggedComponent !== null) {
+            if (this._wasDragStarted === false) {
+                this._draggedComponent.onDragStart(this._dragEvent);
+                this._wasDragStarted = true;
+            }
+            this._draggedComponent.onDrag(event);
+            this.update();
+        } else if (this._hoveredComponent !== component) {
             if (this._hoveredComponent !== null) {
+                this._hoveredComponent._hovered = false;
                 this._hoveredComponent.onLeave(event);
                 this._hoveredComponent = null;
             }
             if (component !== null) {
                 this._hoveredComponent = component;
+                this._hoveredComponent._hovered = true;
                 this._hoveredComponent.onEnter(event);
             }
+            this.update();
         }
 
     };
@@ -145,8 +212,44 @@ define([
         var component = this._container.findByPoint(point);
         var event = new MouseEvent(this, point, component);
 
+        if (this._draggedComponent !== null && this._wasDragStarted === true) {
+            this._draggedComponent.onDragEnd(event);
+        }
 
+        this._draggedComponent = null;
+        this._wasDragStarted = false;
+        this._dragEvent = null;
 
+    };
+
+    Engine.prototype._handlePaint = function () {
+
+        if (this._canvas.offsetWidth != this._canvas.width ||
+            this._canvas.offsetHeight != this._canvas.height) {
+            this._canvas.width = this._canvas.offsetWidth;
+            this._canvas.height = this._canvas.offsetHeight;
+        }
+
+        var ctx = this._canvas.getContext("2d");
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        var event = new PaintEvent(this, ctx, new Bounds(
+            0, 0, this._canvas.width, this._canvas.height
+        ));
+
+        this._updateRequest = null;
+        this._container.onPaint(event);
+
+    };
+
+    Engine.prototype.update = function () {
+        var self = this;
+        if (this._updateRequest === null) {
+            this._updateRequest = window.requestAnimationFrame(function () {
+                self._handlePaint();
+            });
+        }
     };
 
     return Engine;

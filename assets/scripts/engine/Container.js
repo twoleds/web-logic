@@ -22,6 +22,8 @@ define([
     function Container() {
         Component.call(this);
         this._children = [];
+        this.setDraggable(false);
+        this.setFocusable(false);
     }
 
     Container.prototype = Object.create(Component.prototype);
@@ -34,13 +36,14 @@ define([
         if (component._parent !== null) {
             component._parent.removeChild(component);
         }
-        var index = 0;
-        for (var i = 0; i < this._children.length; i++) {
-            if (this._children[i]._index > component._index) {
+        var index;
+        for (index = 0; index < this._children.length; index++) {
+            if (this._children[index]._index > component._index) {
                 break;
             }
         }
         this._children.splice(index, 0, component);
+        component._parent = this;
     };
 
     Container.prototype.findByPoint = function (point) {
@@ -78,7 +81,7 @@ define([
     };
 
     Container.prototype.onPaint = function (event) {
-        for (var i = this._children.length - 1; i >= 0; i--) {
+        for (var i = 0, c = this._children.length; i < c; i++) {
             this._children[i].onPaint(event);
         }
     };
@@ -90,6 +93,7 @@ define([
         var index = this._children.indexOf(component);
         if (index >= 0) {
             this._children.splice(index, 1);
+            component._parent = null;
         }
         return index >= 0;
     };

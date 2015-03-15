@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define([], function () {
+define([
+    "engine/Point"
+], function (Point) {
 
     function Bounds(x, y, w, h) {
         this.x = x || 0;
@@ -25,6 +27,13 @@ define([], function () {
 
     Bounds.prototype = Object.create(Object.prototype);
     Bounds.prototype.constructor = Bounds;
+
+    Bounds.prototype.center = function () {
+        return new Point(
+            this.x + (this.w / 2),
+            this.y + (this.h / 2)
+        );
+    };
 
     Bounds.prototype.clone = function () {
         return new Bounds(this.x, this.y, this.w, this.h);

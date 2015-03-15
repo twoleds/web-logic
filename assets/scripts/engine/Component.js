@@ -23,6 +23,8 @@ define([
         this._index = Number.POSITIVE_INFINITY;
         this._draggable = false;
         this._focusable = false;
+        this._focused = false;
+        this._hovered = false;
     }
 
     Component.prototype = Object.create(Object.prototype);
@@ -60,6 +62,14 @@ define([
         return this._focusable;
     };
 
+    Component.prototype.isFocused = function () {
+        return this._focused;
+    };
+
+    Component.prototype.isHovered = function () {
+        return this._hovered;
+    };
+
     Component.prototype.onBlur = function (event) {
         if (this._parent !== null) {
             this._parent.onBlur(event);
@@ -75,6 +85,18 @@ define([
     Component.prototype.onDrag = function (event) {
         if (this._parent !== null) {
             this._parent.onDrag(event);
+        }
+    };
+
+    Component.prototype.onDragEnd = function (event) {
+        if (this._parent !== null) {
+            this._parent.onDragEnd(event);
+        }
+    };
+
+    Component.prototype.onDragStart = function (event) {
+        if (this._parent !== null) {
+            this._parent.onDragStart(event);
         }
     };
 
