@@ -185,8 +185,7 @@ define([
             }
         });
 
-        this.hide();
-
+        Dialog.prototype.onConfirm.call(this);
     };
 
     return ProjectDialog;

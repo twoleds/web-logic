@@ -14,20 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Component"], function (Component) {
+define([
+    "dialogs/Dialog"
+], function (Dialog) {
 
-    function MealyState() {
-        Component.call(this);
-        this._name = null;
+    function ValueDialog() {
+        Dialog.call(this);
     }
 
-    MealyState.prototype = Object.create(Component.prototype);
-    MealyState.prototype.constructor = MealyState;
+    ValueDialog.prototype = Object.create(Dialog.prototype);
+    ValueDialog.prototype.constructor = ValueDialog;
 
-    MealyState.prototype.getName = function () {
-        return this._name;
+    ValueDialog.prototype._initBody = function (root) {
+
+
+
     };
 
-    return MealyState;
+    return ValueDialog;
 
 });

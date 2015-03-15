@@ -22,6 +22,7 @@ define([
         this._conditionList = new ConditionList();
         this._source = '';
         this._target = '';
+        this._z = 0;
     }
 
     Connector.prototype = Object.create(Object.prototype);
@@ -39,6 +40,10 @@ define([
         return this._target;
     };
 
+    Connector.prototype.getZ = function () {
+        return this._z;
+    };
+
     Connector.prototype.setSource = function (source) {
         if (typeof source !== "string") {
             throw new Error("Invalid name of state.");
@@ -51,6 +56,13 @@ define([
             throw new Error("Invalid name of state.");
         }
         this._target = target;
+    };
+
+    Connector.prototype.setZ = function (z) {
+        if (typeof z !== "number") {
+            throw new Error("Invalid type of argument.");
+        }
+        this._z = z;
     };
 
     return Connector;

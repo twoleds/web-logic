@@ -14,79 +14,68 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(function () {
+define([], function () {
 
     function Point(x, y) {
-        this._x = x || 0;
-        this._y = y || 0;
+        this.x = x || 0;
+        this.y = y || 0;
     }
 
-    Point.prototype.ceil = function () {
-        this._x = Math.ceil(this._x);
-        this._y = Math.ceil(this._y);
-        return this;
-    };
+    Point.prototype = Object.create(Object.prototype);
+    Point.prototype.constructor = Point;
 
     Point.prototype.clone = function () {
-        return new Point(this._x, this._y);
+        return new Point(this.x, this.y);
     };
 
-    Point.prototype.distance = function () {
-        return Math.sqrt((this._x * this._x) + (this._y * this._y));
-    };
-
-    Point.prototype.floor = function () {
-        this._x = Math.floor(this._x);
-        this._y = Math.floor(this._y);
-        return this;
-    };
-
-    Point.prototype.getX = function () {
-        return this._x;
-    };
-
-    Point.prototype.getY = function () {
-        return this._y;
+    Point.prototype.length = function () {
+        return Math.sqrt((this.x * this.x) + (this.y * this.y));
     };
 
     Point.prototype.normalize = function () {
-        var distance = this.distance();
-        this._x /= distance;
-        this._y /= distance;
+        var length = this.length();
+        this.x /= length;
+        this.y /= length;
+        return this;
+    };
+
+    Point.prototype.normal = function () {
+        var tmp = this.x;
+        this.x = -this.y;
+        this.y = tmp;
+        return this;
+    };
+
+    Point.prototype.rotate = function (delta) {
+        var cos = Math.cos(delta);
+        var sin = Math.sin(delta);
+        var x = (cos * this.x) - (sin * this.y);
+        var y = (sin * this.x) + (cos * this.y);
+        this.x = x;
+        this.y = y;
         return this;
     };
 
     Point.prototype.round = function () {
-        this._x = Math.round(this._x);
-        this._y = Math.round(this._y);
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
         return this;
     };
 
-    Point.prototype.scale = function (factor) {
-        this._x *= factor;
-        this._y *= factor;
+    Point.prototype.scale = function (sx, sy) {
+        this.x *= sx;
+        this.y *= sy;
         return this;
     };
 
-    Point.prototype.setX = function (x) {
-        this._x = x;
-        return this;
-    };
-
-    Point.prototype.setXY = function (x, y) {
-        this._x = x;
-        this._y = y;
-        return this;
-    };
-
-    Point.prototype.setY = function (y) {
-        this._y = y;
+    Point.prototype.transform = function (transform) {
+        transform.transform(this);
         return this;
     };
 
     Point.prototype.translate = function (dx, dy) {
-        this._x += dx;
-        this._y += dy;
+        this.x += dx;
+        this.y += dy;
         return this;
     };
 

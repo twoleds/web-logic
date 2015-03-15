@@ -14,15 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(function () {
+define([], function () {
 
-    function Writer() {
 
-    }
-
-    Writer.prototype = Object.create(Object.prototype);
-    Writer.prototype.constructor = Writer;
-
-    return Writer;
 
 });

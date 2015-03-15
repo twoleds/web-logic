@@ -19,12 +19,19 @@ define([
 ], function (Container, MouseEvent, PaintEvent, Point) {
 
     function Engine(canvas) {
+        var self = this;
+
         this._canvas = canvas;
+
         this._container = new Container();
-        this._init();
+        this._container.getEngine = function () {
+            return self;
+        };
 
         this._hoveredComponent = null;
         this._focusedComponent = null;
+
+        this._init();
     }
 
     Engine.prototype = Object.create(Object.prototype);
@@ -88,8 +95,8 @@ define([
 
     Engine.prototype._handleMouseClick = function (point) {
 
-        var event = new MouseEvent(this, point);
         var component = this._container.findByPoint(point);
+        var event = new MouseEvent(this, point, component);
 
         if (component !== null) {
             component.onClick(event);
@@ -99,8 +106,8 @@ define([
 
     Engine.prototype._handleMouseDown = function (point) {
 
-        var event = new MouseEvent(this, point);
         var component = this._container.findByPoint(point);
+        var event = new MouseEvent(this, point, component);
 
         if (this._focusedComponent !== component) {
             if (this._focusedComponent !== null) {
@@ -117,8 +124,8 @@ define([
 
     Engine.prototype._handleMouseMove = function (point) {
 
-        var event = new MouseEvent(this, point);
         var component = this._container.findByPoint(point);
+        var event = new MouseEvent(this, point, component);
 
         if (this._hoveredComponent !== component) {
             if (this._hoveredComponent !== null) {
@@ -135,8 +142,8 @@ define([
 
     Engine.prototype._handleMouseUp = function (point) {
 
-        var event = new MouseEvent(this, point);
         var component = this._container.findByPoint(point);
+        var event = new MouseEvent(this, point, component);
 
 
 

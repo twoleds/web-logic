@@ -16,16 +16,21 @@
 
 define(["engine/Event"], function (Event) {
 
-    function MouseEvent(engine, point) {
+    function MouseEvent(engine, point, target) {
         Event.call(this, engine);
         this._point = point;
+        this._target = target;
     }
 
     MouseEvent.prototype = Object.create(Event.prototype);
     MouseEvent.prototype.constructor = MouseEvent;
 
     MouseEvent.prototype.getPoint = function () {
-        return this._point.clone();
+        return this._point;
+    };
+
+    MouseEvent.prototype.getTarget = function () {
+        return this._target;
     };
 
     return MouseEvent;

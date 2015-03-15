@@ -17,6 +17,8 @@
 define(function () {
 
     function Dialog() {
+        this._callbackConfirm = null;
+        this._callbackCancel = null;
         this._dialog = null;
         this._icon = null;
         this._id = ++Dialog._lastId;
@@ -206,18 +208,27 @@ define(function () {
 
     Dialog.prototype.onCancel = function () {
         this.hide();
+        if (this._callbackCancel !== null) {
+            this._callbackCancel.call(this);
+        }
     };
 
     Dialog.prototype.onConfirm = function () {
         this.hide();
+        if (this._callbackConfirm !== null) {
+            this._callbackConfirm.call(this);
+        }
     };
 
-    Dialog.prototype.show = function () {
+    Dialog.prototype.show = function (confirm, cancel) {
         var self = this;
 
         if (this._dialog === null) {
             this._init();
         }
+
+        this._callbackConfirm = confirm || null;
+        this._callbackCancel = cancel || null;
 
         $(this._dialog).modal({
             backdrop: 'static',

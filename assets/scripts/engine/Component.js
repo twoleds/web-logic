@@ -14,14 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Bounds"], function (Bounds) {
+define([
+    "engine/Bounds"
+], function (Bounds) {
 
-    /**
-     * The Component class is base class of all graphics components.
-     *
-     * @constructor
-     * @public
-     */
     function Component() {
         this._parent = null;
         this._index = Number.POSITIVE_INFINITY;
@@ -37,24 +33,21 @@ define(["engine/Bounds"], function (Bounds) {
     };
 
     Component.prototype.getBounds = function () {
-        return new Bounds();
+        return new Bounds(0, 0, 0, 0);
     };
 
-    /**
-     * Returns parent component of this component.
-     *
-     * @returns {null|Component}
-     * @public
-     */
+    Component.prototype.getEngine = function () {
+        var engine = null;
+        if (this._parent !== null) {
+            engine = this._parent.getEngine();
+        }
+        return engine;
+    };
+
     Component.prototype.getParent = function () {
         return this._parent;
     };
 
-    /**
-     * Returns z-index of this component.
-     *
-     * @returns {number}
-     */
     Component.prototype.getIndex = function () {
         return this._index;
     };
@@ -68,12 +61,21 @@ define(["engine/Bounds"], function (Bounds) {
     };
 
     Component.prototype.onBlur = function (event) {
+        if (this._parent !== null) {
+            this._parent.onBlur(event);
+        }
     };
 
     Component.prototype.onClick = function (event) {
+        if (this._parent !== null) {
+            this._parent.onClick(event);
+        }
     };
 
     Component.prototype.onDrag = function (event) {
+        if (this._parent !== null) {
+            this._parent.onDrag(event);
+        }
     };
 
     Component.prototype.onEnter = function (event) {
@@ -83,6 +85,9 @@ define(["engine/Bounds"], function (Bounds) {
     };
 
     Component.prototype.onFocus = function (event) {
+        if (this._parent !== null) {
+            this._parent.onFocus(event);
+        }
     };
 
     Component.prototype.onLeave = function (event) {
@@ -102,11 +107,6 @@ define(["engine/Bounds"], function (Bounds) {
         this._focusable = focusable;
     };
 
-    /**
-     * Sets new z-index of this component.
-     *
-     * @param {number} index
-     */
     Component.prototype.setIndex = function (index) {
         this._index = index;
     };

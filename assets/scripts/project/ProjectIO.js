@@ -62,6 +62,7 @@ define([
         this._readConditionList(json.conditions, connector.getConditionList());
         connector.setSource(json.source);
         connector.setTarget(json.target);
+        connector.setZ(json.z);
         return connector;
     };
 
@@ -115,6 +116,7 @@ define([
                 throw new Error("Invalid type of state.");
         }
         state.setName(json.name);
+        state.setXYZ(json.x, json.y, json.z);
         return state;
     };
 
@@ -162,6 +164,7 @@ define([
         );
         json.source = connector.getSource();
         json.target = connector.getTarget();
+        json.z = connector.getZ();
         if (connector instanceof MealyConnector) {
             json.type = "mealy";
             json.values = this._writeValueList(connector.getValueList());
@@ -205,6 +208,9 @@ define([
     ProjectIO._writeState = function (state) {
         var json = {};
         json.name = state.getName();
+        json.x = state.getX();
+        json.y = state.getY();
+        json.z = state.getZ();
         if (state instanceof MealyState) {
             json.type = "mealy";
         }

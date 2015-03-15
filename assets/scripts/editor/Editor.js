@@ -14,18 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["engine/Container"], function (Container) {
+define([
+    "engine/Container",
+    "engine/Bounds"
+], function (Container, Bounds) {
 
     function Editor() {
         Container.call(this);
+        this.setDraggable(false);
+        this.setFocusable(false);
     }
-
-    Editor.TYPE_UNKNOWN = 0;
-    Editor.TYPE_MOORE = 1;
-    Editor.TYPE_MEALY = 2;
 
     Editor.prototype = Object.create(Container.prototype);
     Editor.prototype.constructor = Editor;
+
+    Editor.prototype.contains = function (point) {
+        return true;
+    };
+
+    Editor.prototype.getBounds = function () {
+        var canvas = this.getEngine().getCanvas();
+        return new Bounds(0, 0, canvas.width, canvas.height);
+    };
 
     return Editor;
 

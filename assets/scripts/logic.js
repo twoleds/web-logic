@@ -1,8 +1,8 @@
 require([
-    "dialogs/ProjectDialog",
-    "project/Project"
-], function (ProjectDialog, Project) {
+    "logic/LogicIDE"
+], function (LogicIDE) {
 
+    var ide = new LogicIDE(document.getElementById("logic-container"));
 
 
 });
