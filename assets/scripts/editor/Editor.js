@@ -23,9 +23,10 @@ define([
     "project/MooreState",
     "project/MealyConnector",
     "project/MooreConnector",
-    "dialogs/StateDialog"
+    "dialogs/StateDialog",
+    "dialogs/ConnectorDialog"
 ], function (Container, Bounds, ConnectorComponent, StateComponent, MealyState,
-             MooreState, MealyConnector, MooreConnector, StateDialog) {
+             MooreState, MealyConnector, MooreConnector, StateDialog, ConnectorDialog) {
 
     function Editor(project) {
         Container.call(this);
@@ -74,6 +75,11 @@ define([
                 dialog.show(function () {
                     self.getEngine().update();
                 });
+            } else if (focusedObject instanceof ConnectorComponent) {
+                var dialog = new ConnectorDialog(this._project, focusedObject._connector);
+                dialog.show(function () {
+                    self.getEngine().update();
+                });
             }
         }
     };
@@ -94,6 +100,7 @@ define([
         this._connectorSource = null;
         this._connectorTarget = null;
         this._connectorCreate = true;
+        this.getEngine()._clearFocus();
         console.log('CONNECTOR NEW');
     };
 
@@ -123,10 +130,12 @@ define([
         if (this._connectorCreate && this._connectorSource == null) {
             if (event.getTarget() instanceof StateComponent) {
                 this._connectorSource = event.getTarget();
+                this.getEngine()._clearFocus();
             }
         } else if (this._connectorCreate && this._connectorTarget == null) {
             if (event.getTarget() instanceof StateComponent) {
                 this._connectorTarget = event.getTarget();
+                this.getEngine()._clearFocus();
                 this._connectorFinish();
             }
         }

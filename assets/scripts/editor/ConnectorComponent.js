@@ -160,9 +160,17 @@ define([
             ctx.lineTo(z1.x, z1.y);
             ctx.stroke();
 
-            //context.textAlign = "center";
-            //context.textBaseline = "middle";
-            //context.fillText(this._text, cd.x, cd.y);
+            if (this._connector.getConditionList().length() > 0) {
+                var valueList = this._connector.getConditionList().get(0);
+                var condition = '';
+                for (var i = 0, c = valueList.length(); i < c; i++) {
+                    condition += valueList.get(i).getValue();
+                }
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(condition, cd.x, cd.y);
+            }
+
         }
 
     };

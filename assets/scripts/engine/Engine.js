@@ -118,6 +118,15 @@ define([
 
     };
 
+    Engine.prototype._clearFocus = function () {
+        if (this._focusedComponent !== null) {
+            this._focusedComponent._focused = false;
+            this._focusedComponent.onBlur(new MouseEvent(this, new Point(0, 0)), null);
+            this._focusedComponent = null;
+            this.update();
+        }
+    };
+
     Engine.prototype.getCanvas = function () {
         return this._canvas;
     };
