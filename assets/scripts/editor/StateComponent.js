@@ -16,8 +16,9 @@
 
 define([
     "engine/Component",
-    "engine/Bounds"
-], function (Component, Bounds) {
+    "engine/Bounds",
+    "project/MooreState"
+], function (Component, Bounds, MooreState) {
 
     function StateComponent(state) {
         Component.call(this);
@@ -101,10 +102,16 @@ define([
         ctx.textBaseline = "bottom";
         ctx.fillText(this._state._name, this._x, this._y, this._r);
 
-        //ctx.font = "normal " + Math.floor(this._r * 0.5) + "px Arial";
-        //ctx.textAlign = "center";
-        //ctx.textBaseline = "top";
-        //ctx.fillText(this._output.toString(), this._x, this._y, this._r);
+        if (this._state instanceof MooreState) {
+            var output = '';
+            for (var i = 0, c = this._state.getValueList().length(); i < c; i++) {
+                output += this._state.getValueList().get(i).getValue();
+            }
+            ctx.font = "normal " + Math.floor(this._r * 0.55) + "px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "top";
+            ctx.fillText(output, this._x, this._y, this._r);
+        }
 
     };
 

@@ -62,7 +62,7 @@ define([
                     <strong>Zoznam signálov</strong>\
                 </div>\
                 <div class="panel-body">\
-                    <table class="table table-hover table-striped" id="dialog-' + this._id + '-signal-table">\
+                    <table class="table table-striped" id="dialog-' + this._id + '-signal-table">\
                         <thead>\
                             <tr>\
                                 <th style="width: 50%;">Názov</th>\

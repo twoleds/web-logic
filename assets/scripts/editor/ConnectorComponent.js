@@ -16,23 +16,49 @@
 
 define([
     "engine/Component",
-    "engine/Point"
-], function (Component, Point) {
+    "engine/Point",
+    "engine/Bounds"
+], function (Component, Point, Bounds) {
 
     function ConnectorComponent(connector, source, target) {
         Component.call(this);
 
         this.setFocusable(true);
-        this.setDraggable(true);
+        this.setDraggable(false);
         this.setIndex(100);
 
         this._connector = connector;
         this._source = source;
         this._target = target;
+
+        this._c0 = new Point(0, 0);
+        this._c1 = new Point(0, 0);
+        this._c2 = new Point(0, 0);
+        this._c3 = new Point(0, 0);
     }
 
     ConnectorComponent.prototype = Object.create(Component.prototype);
     ConnectorComponent.prototype.constructor = ConnectorComponent;
+
+    ConnectorComponent.prototype.contains = function (point) {
+        var ctx = this.getEngine().getContext();
+        ctx.beginPath();
+        ctx.moveTo(this._c0.x, this._c0.y);
+        ctx.lineTo(this._c1.x, this._c1.y);
+        ctx.lineTo(this._c2.x, this._c2.y);
+        ctx.lineTo(this._c3.x, this._c3.y);
+        ctx.closePath();
+        return ctx.isPointInPath(point.x, point.y);
+    };
+
+    ConnectorComponent.prototype.getBounds = function () {
+        return new Bounds(
+            Math.min(Math.min(Math.min(this._c0.x, this._c1.x), this._c2.x), this._c3.x),
+            Math.min(Math.min(Math.min(this._c0.y, this._c1.y), this._c2.y), this._c3.y),
+            Math.max(Math.max(Math.max(this._c0.x, this._c1.x), this._c2.x), this._c3.x),
+            Math.max(Math.max(Math.max(this._c0.y, this._c1.y), this._c2.y), this._c3.y)
+        );
+    };
 
     ConnectorComponent.prototype.onPaint = function (event) {
         var ctx = event.getContext();
@@ -104,12 +130,29 @@ define([
             var z0 = zd.clone().add(zn);
             var z1 = zd.clone().sub(zn);
 
-            ctx.strokeStyle = "#000";
+            this._c0 = c0;
+            this._c1 = c1;
+            this._c2 = c2;
+            this._c3 = c3;
+
+            if (this._hovered || this._focused) {
+                ctx.strokeStyle = "#00d";
+            } else {
+                ctx.strokeStyle = "#000";
+            }
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(c0.x, c0.y);
             ctx.bezierCurveTo(c1.x, c1.y, c2.x, c2.y, c3.x, c3.y);
             ctx.stroke();
+
+            //ctx.beginPath();
+            //ctx.moveTo(c0.x, c0.y);
+            //ctx.lineTo(c1.x, c1.y);
+            //ctx.lineTo(c2.x, c2.y);
+            //ctx.lineTo(c3.x, c3.y);
+            //ctx.closePath();
+            //ctx.stroke();
 
             ctx.beginPath();
             ctx.moveTo(z0.x, z0.y);

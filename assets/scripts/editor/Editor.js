@@ -22,9 +22,10 @@ define([
     "project/MealyState",
     "project/MooreState",
     "project/MealyConnector",
-    "project/MooreConnector"
+    "project/MooreConnector",
+    "dialogs/StateDialog"
 ], function (Container, Bounds, ConnectorComponent, StateComponent, MealyState,
-             MooreState, MealyConnector, MooreConnector) {
+             MooreState, MealyConnector, MooreConnector, StateDialog) {
 
     function Editor(project) {
         Container.call(this);
@@ -65,7 +66,16 @@ define([
     };
 
     Editor.prototype._objectEdit = function () {
-
+        var self = this;
+        var focusedObject = this.getEngine().getFocusedComponent();
+        if (focusedObject !== null) {
+            if (focusedObject instanceof StateComponent) {
+                var dialog = new StateDialog(this._project, focusedObject._state);
+                dialog.show(function () {
+                    self.getEngine().update();
+                });
+            }
+        }
     };
 
     Editor.prototype._objectRemove = function () {
