@@ -15,20 +15,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "logic/ToolbarButton"
-], function (ToolbarButton) {
+    "project/ValueList"
+], function (ValueList) {
 
-    function ToolbarEditorConnector() {
-        ToolbarButton.call(this);
+    function Condition() {
+        this._input = new ValueList();
+        this._output = new ValueList();
     }
 
-    ToolbarEditorConnector.prototype = Object.create(ToolbarButton.prototype);
-    ToolbarEditorConnector.prototype.constructor = ToolbarEditorConnector;
+    Condition.prototype = Object.create(Object.prototype);
+    Condition.prototype.constructor = Condition;
 
-    ToolbarEditorConnector.prototype.execute = function () {
-
+    Condition.prototype.getInput = function () {
+        return this._input;
     };
 
-    return ToolbarEditorConnector;
+    Condition.prototype.getOutput = function () {
+        return this._output;
+    };
+
+    return Condition;
 
 });

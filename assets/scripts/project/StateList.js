@@ -15,42 +15,65 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "project/List",
     "project/State"
-], function (List, State) {
+], function (State) {
 
     function StateList() {
-        List.call(this);
+        this._items = [];
     }
 
-    StateList.prototype = Object.create(List.prototype);
+    StateList.prototype = Object.create(Object.prototype);
     StateList.prototype.constructor = StateList;
 
     StateList.prototype.append = function (state) {
         if (state instanceof State === false) {
             throw new Error("Invalid argument.");
         }
-        List.prototype.append.call(this, state);
+        var index = this._items.indexOf(state);
+        if (index < 0) {
+            this._items.push(state);
+        }
+        return index < 0;
+    };
+
+    StateList.prototype.clear = function () {
+        this._items = [];
+    };
+
+    StateList.prototype.get = function (index) {
+        var state = null;
+        if (index >= 0 && index < this._items.length) {
+            state = this._items[index];
+        }
+        return state;
     };
 
     StateList.prototype.getByName = function (name) {
-        var signal = null;
+        var state = null;
         if (typeof name === "string") {
-            for (var i = 0; i < this._states.length; i++) {
-                if (this._states[i].getName() == name) {
-                    signal = this._states[i];
+            for (var i = 0; i < this._items.length; i++) {
+                if (this._items[i].getName() == name) {
+                    state = this._items[i];
                     break;
                 }
             }
         }
-        return signal;
+        return state;
+    };
+
+    StateList.prototype.length = function () {
+        return this._items.length;
     };
 
     StateList.prototype.remove = function (state) {
         if (state instanceof State === false) {
             throw new Error("Invalid argument.");
         }
-        List.prototype.remove.call(this, state);
+        var index = this._items.indexOf(state);
+        if (index >= 0) {
+            this._items.splice(index, 1);
+        }
+        return index >= 0;
     };
 
     return StateList;

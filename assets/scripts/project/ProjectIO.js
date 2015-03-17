@@ -15,62 +15,56 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "project/ConnectorList",
-    "project/MealyConnector",
-    "project/MealyState",
-    "project/MooreConnector",
-    "project/MooreState",
+    "project/Condition",
+    "project/Connector",
     "project/Project",
     "project/Signal",
-    "project/SignalList",
-    "project/StateList",
-    "project/Value",
-    "project/ValueList"
-], function (ConnectorList, MealyConnector, MealyState, MooreConnector,
-             MooreState, Project, Signal, SignalList, StateList, Value,
-             ValueList) {
+    "project/State",
+    "project/Value"
+], function (Condition, Connector, Project, Signal, State, Value) {
 
     var ProjectIO = {};
 
-    ProjectIO._readConditionList = function (json, conditionList) {
+    ProjectIO._readCondition = function (json, type) {
+        if (typeof json !== "object" || json == null) {
+            throw new Error("Invalid type of condition list.");
+        }
+        var condition = new Condition();
+        this._readValueList(json.input, condition.getInput());
+        if (type == Project.TYPE_MEALY) {
+            this._readValueList(json.output, condition.getOutput());
+        }
+        return condition;
+    };
+
+    ProjectIO._readConditionList = function (json, conditionList, type) {
         if (typeof json !== "object" || !json instanceof Array) {
             throw new Error("Invalid type of condition list.");
         }
         for (var i = 0; i < json.length; i++) {
-            var valueList = new ValueList();
-            this._readValueList(json[i], valueList);
-            conditionList.append(valueList);
+            conditionList.append(this._readCondition(json[i], type));
         }
     };
 
-    ProjectIO._readConnector = function (json) {
-        var connector;
+    ProjectIO._readConnector = function (json, type) {
         if (typeof json.type !== "string") {
             throw new Error("Undefined type of connector.");
         }
-        switch (json.type) {
-            case "mealy":
-                connector = new MealyConnector();
-                this._readSignalList(json.values, connector.getValueList());
-                break;
-            case "moore":
-                connector = new MooreConnector();
-                break;
-            default:
-                throw new Error("Unknown type of connector.");
-        }
-        this._readConditionList(json.conditions, connector.getConditionList());
+        var connector = new Connector();
         connector.setSource(json.source);
         connector.setTarget(json.target);
+        this._readConditionList(
+            json.conditions, connector.getConditionList(), type
+        );
         return connector;
     };
 
-    ProjectIO._readConnectorList = function (json, connectorList) {
+    ProjectIO._readConnectorList = function (json, connectorList, type) {
         if (typeof json !== "object" || !json instanceof Array) {
             throw new Error("Invalid list of connectors.");
         }
         for (var i = 0; i < json.length; i++) {
-            connectorList.append(this._readConnector(json[i]));
+            connectorList.append(this._readConnector(json[i], type));
         }
     };
 
@@ -98,33 +92,25 @@ define([
         }
     };
 
-    ProjectIO._readState = function (json) {
-        var state;
+    ProjectIO._readState = function (json, type) {
         if (typeof json.type !== "string") {
             throw new Error("Type of state is undefined.");
         }
-        switch (json.type) {
-            case "mealy":
-                state = new MealyState();
-                break;
-            case "moore":
-                state = new MooreState();
-                this._readValueList(json.values, state.getValueList());
-                break;
-            default:
-                throw new Error("Invalid type of state.");
-        }
+        var state = new State();
         state.setName(json.name);
         state.setXY(json.x, json.y);
+        if (type == Project.TYPE_MOORE) {
+            this._readValueList(json.values, state.getValueList());
+        }
         return state;
     };
 
-    ProjectIO._readStateList = function (json, stateList) {
+    ProjectIO._readStateList = function (json, stateList, type) {
         if (typeof json !== "object" || json === null) {
             throw new Error("Invalid type of state list.");
         }
         for (var i = 0; i < json.length; i++) {
-            stateList.append(this._readState(json[i]));
+            stateList.append(this._readState(json[i], type));
         }
     };
 
@@ -148,35 +134,37 @@ define([
         return valueList;
     };
 
-    ProjectIO._writeConditionList = function (conditionList) {
-        var json = [];
-        for (var i = 0, c = conditionList.length(); i < c; i++) {
-            json.push(this._writeValueList(conditionList.get(i)));
+    ProjectIO._writeCondition = function (condition, type) {
+        var json = {};
+        json.input = this._writeValueList(condition.getInput());
+        if (type == Project.TYPE_MEALY) {
+            json.output = this._writeValueList(condition.getOutput());
         }
         return json;
     };
 
-    ProjectIO._writeConnector = function (connector) {
+    ProjectIO._writeConditionList = function (conditionList, type) {
+        var json = [];
+        for (var i = 0, c = conditionList.length(); i < c; i++) {
+            json.push(this._writeCondition(conditionList.get(i), type));
+        }
+        return json;
+    };
+
+    ProjectIO._writeConnector = function (connector, type) {
         var json = {};
         json.conditions = this._writeConditionList(
-            connector.getConditionList()
+            connector.getConditionList(), type
         );
         json.source = connector.getSource();
         json.target = connector.getTarget();
-        if (connector instanceof MealyConnector) {
-            json.type = "mealy";
-            json.values = this._writeValueList(connector.getValueList());
-        }
-        if (connector instanceof MooreConnector) {
-            json.type = "moore";
-        }
         return json;
     };
 
-    ProjectIO._writeConnectorList = function (connectorList) {
+    ProjectIO._writeConnectorList = function (connectorList, type) {
         var json = [];
         for (var i = 0, c = connectorList.length(); i < c; i++) {
-            json.push(this._writeConnector(connectorList.get(i)));
+            json.push(this._writeConnector(connectorList.get(i), type));
         }
         return json;
     };
@@ -203,25 +191,21 @@ define([
         return json;
     };
 
-    ProjectIO._writeState = function (state) {
+    ProjectIO._writeState = function (state, type) {
         var json = {};
         json.name = state.getName();
         json.x = state.getX();
         json.y = state.getY();
-        if (state instanceof MealyState) {
-            json.type = "mealy";
-        }
-        if (state instanceof MooreState) {
-            json.type = "moore";
-            json.values = this._writeValueList(state.getValueList());
+        if (type == Project.TYPE_MOORE) {
+            json.values = this._writeValueList(state.getOutput());
         }
         return json;
     };
 
-    ProjectIO._writeStateList = function (stateList) {
+    ProjectIO._writeStateList = function (stateList, type) {
         var json = [];
         for (var i = 0, c = stateList.length(); i < c; i++) {
-            json.push(this._writeState(stateList.get(i)));
+            json.push(this._writeState(stateList.get(i), type));
         }
         return json;
     };
@@ -249,8 +233,10 @@ define([
         var project = new Project();
         this._readProject(json.project, project);
         this._readSignalList(json.signals, project.getSignalList());
-        this._readStateList(json.states, project.getStateList());
-        this._readConnectorList(json.connectors, project.getConnectorList());
+        this._readStateList(json.states, project.getStateList(), project.type);
+        this._readConnectorList(
+            json.connectors, project.getConnectorList(), project.type
+        );
         return project;
     };
 
@@ -258,8 +244,8 @@ define([
         var json = {};
         json.project = this._writeProject(project);
         json.signals = this._writeSignalList(project.getSignalList());
-        json.states = this._writeStateList(project.getStateList());
-        json.connectors = this._writeConnectorList(project.getConnectorList());
+        json.states = this._writeStateList(project.getStateList(), project.getType());
+        json.connectors = this._writeConnectorList(project.getConnectorList(), project.getType());
         return JSON.stringify(json);
     };
 

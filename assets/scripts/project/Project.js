@@ -14,7 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(["project/SignalList", "project/StateList", "project/ConnectorList"], function (SignalList, StateList, ConnectorList) {
+define([
+    "project/ConnectorList",
+    "project/SignalList",
+    "project/StateList"
+], function (ConnectorList, SignalList, StateList) {
 
     function Project() {
         this._connectorList = new ConnectorList();

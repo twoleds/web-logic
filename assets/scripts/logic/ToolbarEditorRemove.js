@@ -18,17 +18,17 @@ define([
     "logic/ToolbarButton"
 ], function (ToolbarButton) {
 
-    function ToolbarEditorConnector() {
+    function ToolbarEditorRemove() {
         ToolbarButton.call(this);
     }
 
-    ToolbarEditorConnector.prototype = Object.create(ToolbarButton.prototype);
-    ToolbarEditorConnector.prototype.constructor = ToolbarEditorConnector;
+    ToolbarEditorRemove.prototype = Object.create(ToolbarButton.prototype);
+    ToolbarEditorRemove.prototype.constructor = ToolbarEditorRemove;
 
-    ToolbarEditorConnector.prototype.execute = function () {
+    ToolbarEditorRemove.prototype.execute = function () {
 
     };
 
-    return ToolbarEditorConnector;
+    return ToolbarEditorRemove;
 
 });

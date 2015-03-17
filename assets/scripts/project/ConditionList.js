@@ -15,29 +15,48 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "project/List",
-    "project/ValueList"
-], function (List, ValueList) {
+    "project/Condition"
+], function (Condition) {
 
     function ConditionList() {
-        List.call(this);
+        this._items = [];
     }
 
-    ConditionList.prototype = Object.create(List.prototype);
+    ConditionList.prototype = Object.create(Object.prototype);
     ConditionList.prototype.constructor = ConditionList;
 
-    ConditionList.prototype.append = function (valueList) {
-        if (valueList instanceof ValueList === false) {
-            throw new Error("Invalid type of value list.");
+    ConditionList.prototype.append = function (condition) {
+        if (condition instanceof Condition === false) {
+            throw new Error("Invalid type of condition.");
         }
-        List.prototype.append.call(this, valueList);
+        this._items.push(condition);
     };
 
-    ConditionList.prototype.remove = function (valueList) {
-        if (valueList instanceof ValueList === false) {
-            throw new Error("Invalid type of value list.");
+    ConditionList.prototype.clear = function () {
+        this._items = [];
+    };
+
+    ConditionList.prototype.get = function (index) {
+        var value = null;
+        if (index >= 0 && index < this._items.length) {
+            value = this._items[index];
         }
-        List.prototype.remove.call(this, valueList);
+        return value;
+    };
+
+    ConditionList.prototype.length = function () {
+        return this._items.length;
+    };
+
+    ConditionList.prototype.remove = function (condition) {
+        if (condition instanceof Condition === false) {
+            throw new Error("Invalid type of condition.");
+        }
+        var index = this._items.indexOf(condition);
+        if (index >= 0) {
+            this._items.splice(index, 1);
+        }
+        return index >= 0;
     };
 
     return ConditionList;

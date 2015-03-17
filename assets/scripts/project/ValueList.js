@@ -15,50 +15,57 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "project/List",
     "project/Value"
-], function (List, Value) {
+], function (Value) {
 
     function ValueList() {
-        List.call(this);
+        this._items = [];
     }
 
-    ValueList.prototype = Object.create(List.prototype);
+    ValueList.prototype = Object.create(Object.prototype);
     ValueList.prototype.constructor = ValueList;
 
-    ValueList.prototype.append = function (signal) {
-        if (signal instanceof Value === false) {
-            throw new Error("Invalid argument.");
+    ValueList.prototype.append = function (value) {
+        if (value instanceof Value === false) {
+            throw new Error("Invalid type of value.");
         }
-        List.prototype.append.call(this, signal);
+        this._items.push(value);
+    };
+
+    ValueList.prototype.clear = function () {
+        this._items = [];
+    };
+
+    ValueList.prototype.get = function (index) {
+        var value = null;
+        if (index >= 0 && index < this._items.length) {
+            value = this._items[index];
+        }
+        return value;
     };
 
     ValueList.prototype.getByName = function (name) {
-        var signal = null;
+        var value = null;
         if (typeof name === "string") {
             for (var i = 0; i < this._items.length; i++) {
                 if (this._items[i].getName() == name) {
-                    signal = this._items[i];
+                    value = this._items[i];
                     break;
                 }
             }
         }
-        return signal;
+        return value;
     };
 
-    ValueList.prototype.remove = function (signal) {
-        if (signal instanceof Value === false) {
-            throw new Error("Invalid argument.");
+    ValueList.prototype.remove = function (value) {
+        if (value instanceof Value === false) {
+            throw new Error("Invalid type of value.");
         }
-        List.prototype.remove.call(signal);
-    };
-
-    ValueList.prototype.toString = function () {
-        var str = "";
-        for (var i = 0; i < this._items.length; i++) {
-            str += this._items[i];
+        var index = this._items.indexOf(value);
+        if (index >= 0) {
+            this._items.splice(index, 1);
         }
-        return str;
+        return index >= 0;
     };
 
     return ValueList;

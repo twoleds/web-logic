@@ -14,21 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define([
-    "logic/ToolbarButton"
-], function (ToolbarButton) {
+define([], function () {
 
-    function ToolbarEditorConnector() {
-        ToolbarButton.call(this);
+    function ToolbarButton() {
+
     }
 
-    ToolbarEditorConnector.prototype = Object.create(ToolbarButton.prototype);
-    ToolbarEditorConnector.prototype.constructor = ToolbarEditorConnector;
+    ToolbarButton.prototype = Object.create(Object.prototype);
+    ToolbarButton.prototype.constructor = ToolbarButton;
 
-    ToolbarEditorConnector.prototype.execute = function () {
-
+    ToolbarButton.prototype.execute = function () {
     };
 
-    return ToolbarEditorConnector;
+    return ToolbarButton;
 
 });

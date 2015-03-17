@@ -15,30 +15,45 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "project/List",
     "project/Signal"
-], function (List, Signal) {
+], function (Signal) {
 
     function SignalList() {
-        List.call(this);
+        this._items = [];
     }
 
-    SignalList.prototype = Object.create(List.prototype);
+    SignalList.prototype = Object.create(Object.prototype);
     SignalList.prototype.constructor = SignalList;
 
     SignalList.prototype.append = function (signal) {
         if (signal instanceof Signal === false) {
             throw new Error("Invalid argument.");
         }
-        List.prototype.append.call(this, signal);
+        var index = this._items.indexOf(signal);
+        if (index < 0) {
+            this._items.push(signal);
+        }
+        return index < 0;
+    };
+
+    SignalList.prototype.clear = function () {
+        this._items = [];
+    };
+
+    SignalList.prototype.get = function (index) {
+        var signal = null;
+        if (index >= 0 && index < this._items.length) {
+            signal = this._items[signal];
+        }
+        return signal;
     };
 
     SignalList.prototype.getByName = function (name) {
         var signal = null;
         if (typeof name === "string") {
-            for (var i = 0; i < this._states.length; i++) {
-                if (this._states[i].getName() == name) {
-                    signal = this._states[i];
+            for (var i = 0; i < this._items.length; i++) {
+                if (this._items[i].getName() == name) {
+                    signal = this._items[i];
                     break;
                 }
             }
@@ -46,11 +61,19 @@ define([
         return signal;
     };
 
+    SignalList.prototype.length = function () {
+        return this._items.length;
+    };
+
     SignalList.prototype.remove = function (signal) {
         if (signal instanceof Signal === false) {
             throw new Error("Invalid argument.");
         }
-        List.prototype.remove.call(this, signal);
+        var index = this._items.indexOf(signal);
+        if (index >= 0) {
+            this._items.splice(index, 1);
+        }
+        return index >= 0;
     };
 
     return SignalList;

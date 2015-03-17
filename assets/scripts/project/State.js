@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-define(function () {
+define([
+    "project/ValueList"
+], function (ValueList) {
 
     function State() {
         this._name = '';
         this._x = 0;
         this._y = 0;
+        this._output = new ValueList();
     }
 
     State.prototype = Object.create(State.prototype);
@@ -27,6 +30,10 @@ define(function () {
 
     State.prototype.getName = function () {
         return this._name;
+    };
+
+    State.prototype.getOutput = function () {
+        return this._output;
     };
 
     State.prototype.getX = function () {

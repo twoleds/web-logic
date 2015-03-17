@@ -15,12 +15,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "project/List",
     "project/Connector"
-], function (List, Connector) {
+], function (Connector) {
 
     function ConnectorList() {
-        List.call(this);
+        this._items = [];
     }
 
     ConnectorList.prototype = Object.create(List.prototype);
@@ -30,14 +29,60 @@ define([
         if (connector instanceof Connector === false) {
             throw new Error("Invalid argument.");
         }
-        List.prototype.append.call(this, connector);
+        var index = this._items.indexOf(connector);
+        if (index < 0) {
+            this._items.push(connector);
+        }
+        return index < 0;
+    };
+
+    ConnectorList.prototype.clear = function () {
+        this._items = [];
+    };
+
+    ConnectorList.prototype.get = function (index) {
+        var connector = null;
+        if (index >= 0 && index < this._items.length) {
+            connector = this._items[index];
+        }
+        return connector;
+    };
+
+    ConnectorList.prototype.getBySource = function (name) {
+        var connector = null;
+        for (var i = 0; i < this._items.length; i++) {
+            if (this._items[i].getSource() == name) {
+                connector = this._items[i];
+                break;
+            }
+        }
+        return connector;
+    };
+
+    ConnectorList.prototype.getByTarget = function (name) {
+        var connector = null;
+        for (var i = 0; i < this._items.length; i++) {
+            if (this._items[i].getTarget() == name) {
+                connector = this._items[i];
+                break;
+            }
+        }
+        return connector;
+    };
+
+    ConnectorList.prototype.length = function () {
+        return this._items.length;
     };
 
     ConnectorList.prototype.remove = function (connector) {
         if (connector instanceof Connector === false) {
             throw new Error("Invalid argument.");
         }
-        List.prototype.remove.call(this, connector);
+        var index = this._items.indexOf(connector);
+        if (index >= 0) {
+            this._items.splice(index, 1);
+        }
+        return index >= 0;
     };
 
     return ConnectorList;
