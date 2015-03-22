@@ -17,13 +17,61 @@
 define([], function () {
 
     function ToolbarButton() {
-
+        this._root = null;
+        this._icon = this._icon || '';
+        this._title = this._title || '';
+        this._init();
     }
 
     ToolbarButton.prototype = Object.create(Object.prototype);
     ToolbarButton.prototype.constructor = ToolbarButton;
 
+    ToolbarButton.prototype._init = function () {
+        var self = this;
+
+        this._root = document.createElement("button");
+        this._root.classList.add("btn");
+        this._root.classList.add("btn-default");
+
+        var icon = document.createElement("span");
+        icon.className = this._icon;
+        this._root.appendChild(icon);
+
+        this._root.addEventListener('click', function () {
+            self.execute();
+        });
+
+    };
+
     ToolbarButton.prototype.execute = function () {
+    };
+
+    ToolbarButton.prototype.getActive = function () {
+        return this._root.classList.contains('active');
+    };
+
+    ToolbarButton.prototype.setActive = function (active) {
+        if (active) {
+            this._root.classList.add('active');
+        } else {
+            this._root.classList.remove('active');
+        }
+    };
+
+    ToolbarButton.prototype.getIcon = function () {
+        return this._icon;
+    };
+
+    ToolbarButton.prototype.setIcon = function (icon) {
+        this._icon = icon;
+    };
+
+    ToolbarButton.prototype.getTitle = function () {
+        return this._title;
+    };
+
+    ToolbarButton.prototype.setTitle = function (title) {
+        this._title = title;
     };
 
     return ToolbarButton;

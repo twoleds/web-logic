@@ -15,22 +15,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "project/State",
-    "project/ValueList"
-], function (State, ValueList) {
+    "../logic/ToolbarButton"
+], function (ToolbarButton) {
 
-    function MooreState() {
-        State.call(this);
-        this._valueList = new ValueList();
+    function ToolbarConfig(editor) {
+        this._editor = editor;
+        this.setIcon('fa fa-fw fa-list-alt');
+        this.setTitle('Konfigurovať nastavenia stavu alebo prechodu');
+        ToolbarButton.call(this);
     }
 
-    MooreState.prototype = Object.create(State.prototype);
-    MooreState.prototype.constructor = MooreState;
+    ToolbarConfig.prototype = Object.create(ToolbarButton.prototype);
+    ToolbarConfig.prototype.constructor = ToolbarConfig;
 
-    MooreState.prototype.getValueList = function () {
-        return this._valueList;
+    ToolbarConfig.prototype.execute = function () {
+
     };
 
-    return MooreState;
+    return ToolbarConfig;
 
 });

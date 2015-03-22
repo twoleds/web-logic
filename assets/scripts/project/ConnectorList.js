@@ -22,7 +22,7 @@ define([
         this._items = [];
     }
 
-    ConnectorList.prototype = Object.create(List.prototype);
+    ConnectorList.prototype = Object.create(Object.prototype);
     ConnectorList.prototype.constructor = ConnectorList;
 
     ConnectorList.prototype.append = function (connector) {
@@ -49,25 +49,36 @@ define([
     };
 
     ConnectorList.prototype.getBySource = function (name) {
-        var connector = null;
+        var connectors = [];
         for (var i = 0; i < this._items.length; i++) {
             if (this._items[i].getSource() == name) {
-                connector = this._items[i];
-                break;
+                connectors.push(this._items[i]);
             }
         }
-        return connector;
+        return connectors;
+    };
+
+    ConnectorList.prototype.getByState = function (name) {
+        var connectors = [];
+        for (var i = 0; i < this._items.length; i++) {
+            if (this._items[i].getSource() == name) {
+                connectors.push(this._items[i]);
+            } else if (this._items[i].getTarget() == name) {
+                connectors.push(this._items[i]);
+            }
+        }
+        return connectors;
     };
 
     ConnectorList.prototype.getByTarget = function (name) {
-        var connector = null;
+        var connectors = [];
         for (var i = 0; i < this._items.length; i++) {
             if (this._items[i].getTarget() == name) {
-                connector = this._items[i];
+                connectors.push(this._items[i]);
                 break;
             }
         }
-        return connector;
+        return connectors;
     };
 
     ConnectorList.prototype.length = function () {

@@ -15,20 +15,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "logic/ToolbarButton"
+    "../logic/ToolbarButton"
 ], function (ToolbarButton) {
 
-    function ToolbarEditorConnector() {
+    function ToolbarConnector(editor) {
+        this._editor = editor;
+        this.setIcon('fa fa-fw fa-long-arrow-right');
+        this.setTitle('Vytvoriť nový prechod medzi stavmi');
         ToolbarButton.call(this);
     }
 
-    ToolbarEditorConnector.prototype = Object.create(ToolbarButton.prototype);
-    ToolbarEditorConnector.prototype.constructor = ToolbarEditorConnector;
+    ToolbarConnector.prototype = Object.create(ToolbarButton.prototype);
+    ToolbarConnector.prototype.constructor = ToolbarConnector;
 
-    ToolbarEditorConnector.prototype.execute = function () {
-
+    ToolbarConnector.prototype.execute = function () {
+        if (this.getActive() == false) {
+            this._editor.getEngine()._clearFocus();
+            this._editor._mode = 'connector-start';
+            this.setActive(true);
+        } else {
+            this._editor._mode = null;
+            this.setActive(false);
+        }
     };
 
-    return ToolbarEditorConnector;
+    return ToolbarConnector;
 
 });

@@ -16,11 +16,10 @@
 
 define([
     "dialogs/Dialog",
-    "project/MealyState",
-    "project/MooreState",
+    "project/State",
     "project/Signal",
     "project/Value"
-], function (Dialog, MealyState, MooreState, Signal, Value) {
+], function (Dialog, State, Signal, Value) {
 
     function StateDialog(project, state) {
         Dialog.call(this);
@@ -67,15 +66,11 @@ define([
 
         $('#dialog-' + this._id + '-name').val(this._state.getName());
 
-        if (this._state instanceof MealyState) {
-            output.find('tbody').html('');
-        }
-
-        if (this._state instanceof MooreState) {
+        if (this._project.getType() == 'moore') {
             var tbody = output.find('tbody').html('');
             for (var i = 0, c = signalList.length(); i < c; i++) {
                 var signal = signalList.get(i);
-                var stateSignal = this._state.getValueList().getByName(signal.getName());
+                var stateSignal = this._state.getOutput().getByName(signal.getName());
                 if (signal.getDirection() == Signal.DIRECTION_OUTPUT) {
                     $('\
                         <tr>\
@@ -89,6 +84,8 @@ define([
                     ').appendTo(tbody);
                 }
             }
+        } else {
+            output.find('tbody').html('');
         }
 
     };
@@ -99,10 +96,10 @@ define([
         $('#dialog-' + this._id + '-output tbody tr').each(function () {
             var name = $(this).find('input[name="name"]').val();
             var value = $(this).find('input[name="value"]').val();
-            var signal = self._state.getValueList().getByName(name);
+            var signal = self._state.getOutput().getByName(name);
             if (signal == null) {
                 signal = new Value();
-                self._state.getValueList().append(signal);
+                self._state.getOutput().append(signal);
             }
             signal.setName(name);
             signal.setValue(value);

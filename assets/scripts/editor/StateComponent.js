@@ -16,17 +16,17 @@
 
 define([
     "engine/Component",
-    "engine/Bounds",
-    "project/MooreState"
-], function (Component, Bounds, MooreState) {
+    "engine/Bounds"
+], function (Component, Bounds) {
 
-    function StateComponent(state) {
+    function StateComponent(project, state) {
         Component.call(this);
 
         this.setIndex(50);
         this.setDraggable(true);
         this.setFocusable(true);
 
+        this._project = project;
         this._state = state;
         this._x = state.getX();
         this._y = state.getY();
@@ -102,10 +102,10 @@ define([
         ctx.textBaseline = "bottom";
         ctx.fillText(this._state._name, this._x, this._y, this._r);
 
-        if (this._state instanceof MooreState) {
+        if (this._project.getType() == 'moore') {
             var output = '';
-            for (var i = 0, c = this._state.getValueList().length(); i < c; i++) {
-                output += this._state.getValueList().get(i).getValue();
+            for (var i = 0, c = this._state.getOutput().length(); i < c; i++) {
+                output += this._state.getOutput().get(i).getValue();
             }
             ctx.font = "normal " + Math.floor(this._r * 0.55) + "px Arial";
             ctx.textAlign = "center";

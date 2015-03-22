@@ -16,12 +16,11 @@
 
 define([
     "dialogs/Dialog",
-    "project/MealyConnector",
-    "project/MooreConnector",
+    "project/Connector",
     "project/Value",
     "project/Signal",
     "project/ValueList"
-], function (Dialog, MealyConnector, MooreConnector, Value, Signal, ValueList) {
+], function (Dialog, Connector, Value, Signal, ValueList) {
 
     function ConnectorDialog(project, connector) {
         Dialog.call(this);

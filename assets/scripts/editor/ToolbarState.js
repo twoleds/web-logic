@@ -15,20 +15,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 define([
-    "logic/ToolbarButton"
+    "../logic/ToolbarButton"
 ], function (ToolbarButton) {
 
-    function ToolbarEditorRemove() {
+    function ToolbarState(editor) {
+        this._editor = editor;
+        this.setIcon("fa fa-fw fa-circle-o");
+        this.setTitle("Vytvoriť nový stav");
         ToolbarButton.call(this);
     }
 
-    ToolbarEditorRemove.prototype = Object.create(ToolbarButton.prototype);
-    ToolbarEditorRemove.prototype.constructor = ToolbarEditorRemove;
+    ToolbarState.prototype = Object.create(ToolbarButton.prototype);
+    ToolbarState.prototype.constructor = ToolbarState;
 
-    ToolbarEditorRemove.prototype.execute = function () {
-
+    ToolbarState.prototype.execute = function () {
+        this._editor._stateNew();
     };
 
-    return ToolbarEditorRemove;
+    return ToolbarState;
 
 });

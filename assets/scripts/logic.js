@@ -1,8 +1,5 @@
 require([
-    "logic/LogicIDE"
-], function (LogicIDE) {
-
-    var ide = new LogicIDE(document.getElementById("logic-container"));
-
-
+    "logic/Environment"
+], function (Environment) {
+    var ide = new Environment(document.getElementById("logic-container"));
 });

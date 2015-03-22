@@ -57,6 +57,10 @@ define([
         return value;
     };
 
+    ValueList.prototype.length = function () {
+        return this._items.length;
+    };
+
     ValueList.prototype.remove = function (value) {
         if (value instanceof Value === false) {
             throw new Error("Invalid type of value.");
