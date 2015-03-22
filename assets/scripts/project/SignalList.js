@@ -43,7 +43,7 @@ define([
     SignalList.prototype.get = function (index) {
         var signal = null;
         if (index >= 0 && index < this._items.length) {
-            signal = this._items[signal];
+            signal = this._items[index];
         }
         return signal;
     };

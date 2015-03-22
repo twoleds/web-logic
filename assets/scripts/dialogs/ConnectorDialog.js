@@ -49,39 +49,81 @@ define([
                     </div>\
                 </div>\
             </div>\
-            <div class="panel panel-default" id="dialog-' + this._id + '-conds">\
+            <div class="panel panel-default">\
                 <div class="panel-heading">\
                     <strong>Podmienky</strong>\
                 </div>\
                 <div class="panel-body">\
-                    <table class="table table-striped">\
-                        <thead>\
-                            <tr>\
-                                <th>Názov</th>\
-                                <th>Hodnota</th>\
-                            </tr>\
-                        </thead>\
-                        <tbody></tbody>\
-                    </table>\
-                </div>\
-            </div>\
-            <div class="panel panel-default hidden" id="dialog-' + this._id + '-output">\
-                <div class="panel-heading">\
-                    <strong>Výstup</strong>\
-                </div>\
-                <div class="panel-body">\
-                    <table class="table table-striped">\
-                        <thead>\
-                            <tr>\
-                                <th>Názov</th>\
-                                <th>Hodnota</th>\
-                            </tr>\
-                        </thead>\
-                        <tbody></tbody>\
-                    </table>\
+                    <div id="dialog-' + this._id + '-conds"></div>\
+                    <button class="btn btn-success pull-right" id="dialog-' + this._id + '-cond-add">\
+                        <span class="fa fa-fw fa-plus"></span>\
+                        Pridať podmienku\
+                    </button>\
                 </div>\
             </div>\
         ';
+
+        $('#dialog-' + this._id + '-cond-add').click(function () {
+            self._newCondition();
+        });
+
+    };
+
+    ConnectorDialog.prototype._newCondition = function (condition) {
+
+        var html = $('\
+            <div>\
+                <div class="panel panel-default">\
+                    <div class="panel-heading">\
+                        &nbsp;\
+                        <button class="btn btn-danger btn-xs pull-right">\
+                            <span class="fa fa-fw fa-close"></span>\
+                        </button>\
+                    </div>\
+                    <div class="panel-body">\
+                        <table class="table table-striped">\
+                            <thead>\
+                                <tr>\
+                                    <th>Signál</th>\
+                                    <th>Hodnota</th>\
+                                </tr>\
+                            </thead>\
+                            <tbody></tbody>\
+                        </table>\
+                    </div>\
+                </div>\
+        ');
+        html.appendTo('#dialog-' + this._id + '-conds');
+
+        var tbody = html.find('tbody').html('');
+        console.log(tbody);
+
+        var signalList = this._project.getSignalList();
+        for (var i = 0, c = signalList.length(); i < c; i++) {
+            var signal = signalList.get(i);
+            if (signal.getDirection() == Signal.DIRECTION_INPUT) {
+                $('\
+                    <tr>\
+                        <td><input class="form-control" type="text" readonly value="' + signal.getName() + '"/></td>\
+                        <td><input class="form-control" type="text" value=""/></td>\
+                    </tr>\
+                ').appendTo(tbody);
+            }
+        }
+
+        if (this._project.getType() == 'mealy') {
+            for (var i = 0, c = signalList.length(); i < c; i++) {
+                var signal = signalList.get(i);
+                if (signal.getDirection() == Signal.DIRECTION_OUTPUT) {
+                    $('\
+                        <tr class="danger">\
+                            <td><input class="form-control" type="text" readonly value="' + signal.getName() + '"/></td>\
+                            <td><input class="form-control" type="text" value=""/></td>\
+                        </tr>\
+                    ').appendTo(tbody);
+                }
+            }
+        }
 
     };
 

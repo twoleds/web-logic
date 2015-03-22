@@ -30,10 +30,12 @@ define([
     ToolbarProjectConfig.prototype.constructor = ToolbarProjectConfig;
 
     ToolbarProjectConfig.prototype.execute = function () {
+        var self = this;
         var dialog = new ProjectDialog(this._environment._project);
         dialog.setConfirmTitle("Uložiť zmeny");
         dialog.show(function () {
             dialog.destroy();
+            console.log(self._environment._project);
         });
     };
 

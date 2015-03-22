@@ -29,7 +29,7 @@ define([
     ToolbarConfig.prototype.constructor = ToolbarConfig;
 
     ToolbarConfig.prototype.execute = function () {
-
+        this._editor._objectEdit();
     };
 
     return ToolbarConfig;

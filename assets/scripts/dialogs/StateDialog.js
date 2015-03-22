@@ -86,6 +86,7 @@ define([
             }
         } else {
             output.find('tbody').html('');
+            output.addClass('hidden');
         }
 
     };

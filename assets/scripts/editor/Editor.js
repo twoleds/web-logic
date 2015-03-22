@@ -128,18 +128,6 @@ define([
         }
     };
 
-    Editor.prototype._objectRemove = function () {
-        var focusedObject = this.getEngine().getFocusedComponent();
-        if (focusedObject !== null) {
-            if (focusedObject instanceof StateComponent) {
-                this._project.getStateList().remove(focusedObject._state);
-                this.removeChild(focusedObject);
-                this.getEngine()._focusedComponent = null;
-                this.getEngine().update();
-            }
-        }
-    };
-
     Editor.prototype._findConnector = function (connector) {
         var component = null;
         var children = this.getChildren();
