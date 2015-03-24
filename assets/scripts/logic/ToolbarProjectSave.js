@@ -30,12 +30,22 @@ define([
     ToolbarProjectSave.prototype.constructor = ToolbarProjectSave;
 
     ToolbarProjectSave.prototype.execute = function () {
-        var data = btoa(ProjectIO.write(this._environment._project));
-        var link = document.createElement("a");
-        link.download = this._environment._project.getName() + ".fsm";
-        link.href = "data:application/x-download;base64," + data;
-        link.target = "_blank";
-        link.click();
+
+        var data = new Blob(
+            [ProjectIO.write(this._environment._project)],
+            {"type": "application/json"}
+        );
+
+        var date = new Date();
+        var name = "automat-" + date.getFullYear() + "-";
+        name += ((date.getMonth() < 10) ? "0" : "") + date.getMonth() + "-";
+        name += ((date.getDay() < 10) ? "0" : "") + date.getDay() + "-";
+        name += ((date.getHours() < 10) ? "0" : "") + date.getHours() + "-";
+        name += ((date.getMinutes() < 10) ? "0" : "") + date.getMinutes();
+        name += ".fsm";
+
+        saveAs(data, name);
+
     };
 
     return ToolbarProjectSave;

@@ -89,7 +89,9 @@ define([
 
         this._content.innerHTML = '';
         if (this._session !== null) {
-            this._session.destroy();
+            if (typeof this._session.destroy == "function") {
+                this._session.destroy();
+            }
             this._session = null;
         }
 

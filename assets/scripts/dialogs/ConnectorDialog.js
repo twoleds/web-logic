@@ -16,11 +16,11 @@
 
 define([
     "dialogs/Dialog",
+    "project/Condition",
     "project/Connector",
     "project/Value",
-    "project/Signal",
-    "project/ValueList"
-], function (Dialog, Connector, Value, Signal, ValueList) {
+    "project/Signal"
+], function (Dialog, Condition, Connector, Value, Signal) {
 
     function ConnectorDialog(project, connector) {
         Dialog.call(this);
@@ -70,13 +70,14 @@ define([
     };
 
     ConnectorDialog.prototype._newCondition = function (condition) {
+        var condition = condition || null;
 
         var html = $('\
             <div>\
                 <div class="panel panel-default">\
                     <div class="panel-heading">\
                         &nbsp;\
-                        <button class="btn btn-danger btn-xs pull-right">\
+                        <button class="btn btn-danger btn-xs pull-right" name="condition-remove">\
                             <span class="fa fa-fw fa-close"></span>\
                         </button>\
                     </div>\
@@ -95,30 +96,38 @@ define([
         ');
         html.appendTo('#dialog-' + this._id + '-conds');
 
-        var tbody = html.find('tbody').html('');
-        console.log(tbody);
+        html.find('button[name="condition-remove"]').click(function () {
+            html.remove();
+        });
 
+        var tbody = html.find('tbody').html('');
         var signalList = this._project.getSignalList();
+        var input = (condition !== null) ? condition.getInput() : null;
         for (var i = 0, c = signalList.length(); i < c; i++) {
             var signal = signalList.get(i);
+            var value = (input !== null) ? input.getByName(signal.getName()) : null;
+            var signalValue = (value !== null) ? value.getValue() : "";
             if (signal.getDirection() == Signal.DIRECTION_INPUT) {
                 $('\
-                    <tr>\
-                        <td><input class="form-control" type="text" readonly value="' + signal.getName() + '"/></td>\
-                        <td><input class="form-control" type="text" value=""/></td>\
+                    <tr data-dir="input">\
+                        <td><input name="name" class="form-control" type="text" readonly value="' + signal.getName() + '"/></td>\
+                        <td><input name="value" class="form-control" type="text" value="' + signalValue + '"/></td>\
                     </tr>\
                 ').appendTo(tbody);
             }
         }
 
+        var output = (condition !== null) ? condition.getOutput() : null;
         if (this._project.getType() == 'mealy') {
             for (var i = 0, c = signalList.length(); i < c; i++) {
                 var signal = signalList.get(i);
+                var value = (output !== null) ? output.getByName(signal.getName()) : null;
+                var signalValue = (value !== null) ? value.getValue() : "";
                 if (signal.getDirection() == Signal.DIRECTION_OUTPUT) {
                     $('\
-                        <tr class="danger">\
-                            <td><input class="form-control" type="text" readonly value="' + signal.getName() + '"/></td>\
-                            <td><input class="form-control" type="text" value=""/></td>\
+                        <tr class="danger" data-dir="output">\
+                            <td><input name="name" class="form-control" type="text" readonly value="' + signal.getName() + '"/></td>\
+                            <td><input name="value" class="form-control" type="text" value="' + signalValue + '"/></td>\
                         </tr>\
                     ').appendTo(tbody);
                 }
@@ -128,46 +137,37 @@ define([
     };
 
     ConnectorDialog.prototype.onBeforeShow = function () {
-
         $('#dialog-' + this._id + '-source').val(this._connector.getSource());
         $('#dialog-' + this._id + '-target').val(this._connector.getTarget());
-
-        var signalList = this._project.getSignalList();
-        var output = $('#dialog-' + this._id + '-conds');
-        var tbody = output.find('tbody').html('');
-        var valueList = this._connector.getConditionList().length() > 0 ? this._connector.getConditionList().get(0) : null;
-        for (var i = 0, c = signalList.length(); i < c; i++) {
-            var signal = signalList.get(i);
-            var stateSignal = (valueList !== null) ? valueList.getByName(signal.getName()) : null;
-            if (signal.getDirection() == Signal.DIRECTION_INPUT) {
-                $('\
-                    <tr>\
-                        <td>\
-                            <input type="text" name="name" value="' + signal.getName() + '" class="form-control" readonly>\
-                        </td>\
-                        <td>\
-                            <input type="text" name="value" value="' + (stateSignal !== null ? stateSignal.getValue() : '') + '" class="form-control">\
-                        </td>\
-                    </tr>\
-                ').appendTo(tbody);
-            }
+        $('#dialog-' + this._id + '-conds').html('');
+        for (var i = 0, c = this._connector.getConditionList().length(); i < c; i++) {
+            this._newCondition(this._connector.getConditionList().get(i));
         }
-
     };
 
     ConnectorDialog.prototype.onConfirm = function () {
         var self = this;
-        var signalList = new ValueList();
-        $('#dialog-' + this._id + '-conds tbody tr').each(function () {
-            var name = $(this).find('input[name="name"]').val();
-            var value = $(this).find('input[name="value"]').val();
-            var signal = new Value();
-            signal.setName(name);
-            signal.setValue(value);
-            signalList.append(signal);
-        });
+
         this._connector.getConditionList().clear();
-        this._connector.getConditionList().append(signalList);
+        $('#dialog-' + this._id + '-conds table').each(function () {
+            var condition = new Condition();
+            $(this).find('tbody tr[data-dir="input"]').each(function () {
+                var value = new Value();
+                value.setName($(this).find('input[name="name"]').val());
+                value.setValue($(this).find('input[name="value"]').val());
+                condition.getInput().append(value);
+            });
+            if (self._project.getType() == 'mealy') {
+                $(this).find('tbody tr[data-dir="output"]').each(function () {
+                    var value = new Value();
+                    value.setName($(this).find('input[name="name"]').val());
+                    value.setValue($(this).find('input[name="value"]').val());
+                    condition.getOutput().append(value);
+                });
+            }
+            self._connector.getConditionList().append(condition);
+        });
+
         Dialog.prototype.onConfirm.call(this);
     };
 

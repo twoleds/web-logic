@@ -97,6 +97,7 @@ define([
         for (var i = 0, c = connectorList.length(); i < c; i++) {
             var connector = connectorList.get(i);
             var component = new ConnectorComponent(
+                this._project,
                 connector,
                 states[connector.getSource()],
                 states[connector.getTarget()]
@@ -188,7 +189,7 @@ define([
         this._project.getConnectorList().append(connector);
 
         var component = new ConnectorComponent(
-            connector, source, target
+            this._project, connector, source, target
         );
         this.appendChild(component);
         this.getEngine().update();

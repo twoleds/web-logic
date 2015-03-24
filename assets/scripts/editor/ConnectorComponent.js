@@ -20,13 +20,14 @@ define([
     "engine/Bounds"
 ], function (Component, Point, Bounds) {
 
-    function ConnectorComponent(connector, source, target) {
+    function ConnectorComponent(project, connector, source, target) {
         Component.call(this);
 
         this.setFocusable(true);
         this.setDraggable(false);
         this.setIndex(100);
 
+        this._project = project;
         this._connector = connector;
         this._source = source;
         this._target = target;
@@ -161,18 +162,33 @@ define([
             ctx.stroke();
 
             if (this._connector.getConditionList().length() > 0) {
-                var valueList = this._connector.getConditionList().get(0);
-                var condition = '';
-                for (var i = 0, c = valueList.length(); i < c; i++) {
-                    condition += valueList.get(i).getValue();
+                var conditionList = this._connector.getConditionList();
+                for (var i = 0; i < conditionList.length(); i++) {
+                    var condition = conditionList.get(i);
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.font = "normal 12px Arial";
+                    ctx.fillText(this._printCondition(condition), cd.x, cd.y);
+                    cd.y -= 15;
                 }
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText(condition, cd.x, cd.y);
             }
 
         }
 
+    };
+
+    ConnectorComponent.prototype._printCondition = function (condition) {
+        var result = '';
+        for (var i = 0, c = condition.getInput().length(); i < c; i++) {
+            result += condition.getInput().get(i).getValue();
+        }
+        if (this._project.getType() == 'mealy') {
+            result += ' | ';
+            for (var i = 0, c = condition.getOutput().length(); i < c; i++) {
+                result += condition.getOutput().get(i).getValue();
+            }
+        }
+        return result;
     };
 
     return ConnectorComponent;

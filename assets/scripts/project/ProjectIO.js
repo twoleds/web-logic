@@ -47,9 +47,6 @@ define([
     };
 
     ProjectIO._readConnector = function (json, type) {
-        if (typeof json.type !== "string") {
-            throw new Error("Undefined type of connector.");
-        }
         var connector = new Connector();
         connector.setSource(json.source);
         connector.setTarget(json.target);
@@ -93,9 +90,6 @@ define([
     };
 
     ProjectIO._readState = function (json, type) {
-        if (typeof json.type !== "string") {
-            throw new Error("Type of state is undefined.");
-        }
         var state = new State();
         state.setName(json.name);
         state.setXY(json.x, json.y);
@@ -233,9 +227,9 @@ define([
         var project = new Project();
         this._readProject(json.project, project);
         this._readSignalList(json.signals, project.getSignalList());
-        this._readStateList(json.states, project.getStateList(), project.type);
+        this._readStateList(json.states, project.getStateList(), project.getType());
         this._readConnectorList(
-            json.connectors, project.getConnectorList(), project.type
+            json.connectors, project.getConnectorList(), project.getType()
         );
         return project;
     };
