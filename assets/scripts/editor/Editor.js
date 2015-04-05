@@ -67,7 +67,6 @@ define([
         canvas.width = this._environment._content.offsetWidth;
         canvas.height = this._environment._content.offsetHeight;
         this._environment._content.appendChild(canvas);
-        this._environment._toolbarModeEditor.setActive(true);
 
         this._engine = new Engine(canvas);
         this._engine.getContainer().appendChild(this);
@@ -106,8 +105,6 @@ define([
         }
 
         this._engine.update();
-        window.editor = this;
-        console.log(this._project);
 
     };
 

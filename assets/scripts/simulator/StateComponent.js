@@ -19,13 +19,14 @@ define([
     "engine/Bounds"
 ], function (Component, Bounds) {
 
-    function StateComponent(project, state) {
+    function StateComponent(simulator, project, state) {
         Component.call(this);
 
         this.setIndex(50);
-        this.setDraggable(true);
-        this.setFocusable(true);
+        this.setDraggable(false);
+        this.setFocusable(false);
 
+        this._simulator = simulator;
         this._project = project;
         this._state = state;
         this._x = state.getX();
@@ -37,11 +38,7 @@ define([
     StateComponent.prototype.constructor = StateComponent;
 
     StateComponent.prototype.contains = function (point) {
-        var result = false;
-        if (this.getBounds().contains(point)) {
-            result = (Math.pow(point.x - this._x, 2) + Math.pow(point.y - this._y, 2)) <= Math.pow(this._r, 2);
-        }
-        return result;
+        return false;
     };
 
     StateComponent.prototype.getBounds = function () {
@@ -49,25 +46,6 @@ define([
             this._x - this._r, this._y - this._r,
             this._r * 2, this._r * 2
         );
-    };
-
-    StateComponent.prototype.onDrag = function (event) {
-        var dx = event.getPoint().x - this._dragMouseX;
-        var dy = event.getPoint().y - this._dragMouseY;
-        this._x = Math.round((this._dragStartX + dx) / 10) * 10;
-        this._y = Math.round((this._dragStartY + dy) / 10) * 10;
-    };
-
-    StateComponent.prototype.onDragEnd = function (event) {
-        this.onDrag(event);
-        this._state.setXY(this._x, this._y);
-    };
-
-    StateComponent.prototype.onDragStart = function (event) {
-        this._dragMouseX = event.getPoint().x;
-        this._dragMouseY = event.getPoint().y;
-        this._dragStartX = this._x;
-        this._dragStartY = this._y;
     };
 
     StateComponent.prototype.onPaint = function (event) {
@@ -81,20 +59,12 @@ define([
         ctx.arcTo(this._x - this._r, this._y - this._r, this._x, this._y - this._r, this._r);
         ctx.closePath();
 
-        if (this._hovered) {
-            ctx.fillStyle = '#eeee66';
-            ctx.strokeStyle = '#a80036';
-        } else if (this._focused) {
-            ctx.fillStyle = '#eeee66';
+        if (this._simulator.getCurrentState() == this) {
+            ctx.fillStyle = '#ccffcc';
             ctx.strokeStyle = '#a80036';
         } else {
-            if (this._state.getDefault()) {
-                ctx.fillStyle = '#ccffcc';
-                ctx.strokeStyle = '#a80036';
-            } else {
-                ctx.fillStyle = '#ffffcc';
-                ctx.strokeStyle = '#a80036';
-            }
+            ctx.fillStyle = '#ffffcc';
+            ctx.strokeStyle = '#a80036';
         }
 
         ctx.lineWidth = 2;

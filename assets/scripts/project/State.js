@@ -23,10 +23,15 @@ define([
         this._x = 0;
         this._y = 0;
         this._output = new ValueList();
+        this._default = false;
     }
 
     State.prototype = Object.create(State.prototype);
     State.prototype.constructor = State;
+
+    State.prototype.getDefault = function () {
+        return this._default;
+    };
 
     State.prototype.getName = function () {
         return this._name;
@@ -42,6 +47,10 @@ define([
 
     State.prototype.getY = function () {
         return this._y;
+    };
+
+    State.prototype.setDefault = function (value) {
+        this._default = value;
     };
 
     State.prototype.setName = function (name) {

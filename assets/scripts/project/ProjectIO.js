@@ -93,6 +93,7 @@ define([
         var state = new State();
         state.setName(json.name);
         state.setXY(json.x, json.y);
+        state.setDefault(json.default);
         if (type == Project.TYPE_MOORE) {
             this._readValueList(json.values, state.getValueList());
         }
@@ -190,6 +191,7 @@ define([
         json.name = state.getName();
         json.x = state.getX();
         json.y = state.getY();
+        json.default = state.getDefault();
         if (type == Project.TYPE_MOORE) {
             json.values = this._writeValueList(state.getOutput());
         }

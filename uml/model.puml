@@ -1,0 +1,110 @@
+@startuml
+
+skinparam maxWidth 100
+
+class Condition {
+    + getInput(): ValueList
+    + getOutput(): ValueList
+}
+Condition "2" *-- ValueList
+
+class ConditionList {
+    + append(cond: Condition)
+    + clear()
+    + get(index: Number): Condition
+    + length(): Number
+    + remove(cond: Condition)
+}
+ConditionList "0..*" *-- Condition
+
+class Connector {
+    + getConditionList(): ConditionList
+    + getSource(): String
+    + getTarget(): String
+    + setSource(source: String)
+    + setTarget(target: String)
+}
+
+class ConnectorList {
+    + append(con: Connector)
+    + clear()
+    + get(index: Number): Connector
+    + getBySource(name: String): Connector[]
+    + getByState(name: String): Connector[]
+    + getByTarget(name: String): Connector[]
+    + length(): Number
+    + remove(con: Connector)
+}
+ConnectorList "0..*" *-- Connector
+
+class Project {
+    + getConnectorList(): ConnectorList
+    + getName(): String
+    + getSignalList(): SignalList
+    + getStateList(): StateList
+    + getType(): String
+    + setName(name: String)
+    + setType(type: String)
+}
+Project "1" *-- ConnectorList
+Project "1" *-- StateList
+Project "1" *-- SignalList
+
+class ProjectIO {
+    + {static} read(jsonStr: String): Project
+    + {static} write(project: Project): String
+}
+ProjectIO .> Project: <<use>>
+
+class Signal {
+    + getName(): String
+    + getDirection(): String
+    + setName(name: String)
+    + setDirection(dir: String)
+}
+
+class SignalList {
+    + append(signal: Signal)
+    + clear()
+    + get(index: Number): Signal
+    + getByName(name: String): Signal
+    + length(): Number
+    + remove(signal: Signal)
+}
+SignalList "0..*" *-- Signal
+
+class State {
+    + getName(): String
+    + getOutput(): ValueList
+    + setName(name: String)
+}
+State "1" *-- ValueList
+
+class StateList {
+    + append(state: State)
+    + clear()
+    + get(index: Number): State
+    + getByName(name: String): State
+    + length(): Number
+    + remove(state: State)
+}
+StateList "0..*" *-- State
+
+class Value {
+    + getName(): string
+    + getValue(): String
+    + setName(name: String)
+    + setValue(value: String)
+}
+
+class ValueList {
+    + append(val: Value)
+    + clear()
+    + get(index: Number): Value
+    + getByName(name: String): Value
+    + length(): Number
+    + remove(val: Value)
+}
+ValueList "0..*" *-- Value
+
+@enduml

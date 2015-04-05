@@ -16,6 +16,7 @@
 
 define([
     "editor/Editor",
+    "simulator/Simulator",
     "logic/Toolbar",
     "logic/ToolbarGroup",
     "logic/ToolbarModeEditor",
@@ -25,7 +26,7 @@ define([
     "logic/ToolbarProjectOpen",
     "logic/ToolbarProjectSave",
     "project/Project"
-], function (Editor, Toolbar, ToolbarGroup, ToolbarModeEditor,
+], function (Editor, Simulator, Toolbar, ToolbarGroup, ToolbarModeEditor,
              ToolbarModeSimulator, ToolbarProjectConfig, ToolbarProjectNew,
              ToolbarProjectOpen, ToolbarProjectSave, Project) {
 
@@ -89,8 +90,8 @@ define([
 
         this._content.innerHTML = '';
         if (this._session !== null) {
-            if (typeof this._session.destroy == "function") {
-                this._session.destroy();
+            if (typeof this._session._destroy == "function") {
+                this._session._destroy();
             }
             this._session = null;
         }
@@ -100,9 +101,11 @@ define([
 
         switch (mode) {
             case Environment.MODE_EDITOR:
+                this._toolbarModeEditor.setActive(true);
                 this._session = new Editor(this, this._project);
                 break;
             case Environment.MODE_SIMULATOR:
+                this._toolbarModeSimulator.setActive(true);
                 this._session = new Simulator(this, this._project);
                 break;
             case Environment.MODE_WELCOME:

@@ -34,9 +34,22 @@ define([
         var self = this;
 
         root.innerHTML = '\
-            <div class="form-group">\
-                <label>Názov stavu</label>\
-                <input type="text" value="" id="dialog-' + this._id + '-name" class="form-control" />\
+            <div class="row">\
+                <div class="col-xs-8">\
+                    <div class="form-group">\
+                        <label>Názov stavu</label>\
+                        <input type="text" value="" id="dialog-' + this._id + '-name" class="form-control" />\
+                    </div>\
+                </div>\
+                <div class="col-xs-4">\
+                    <div class="form-group">\
+                        <label>Počiatočný stav</label>\
+                        <select id="dialog-' + this._id + '-default" class="form-control">\
+                            <option selected value="0">Nie</option>\
+                            <option value="1">Áno</option>\
+                        </select>\
+                    </div>\
+                </div>\
             </div>\
             <div class="panel panel-default" id="dialog-' + this._id + '-output">\
                 <div class="panel-heading">\
@@ -65,6 +78,7 @@ define([
         var signalList = this._project.getSignalList();
 
         $('#dialog-' + this._id + '-name').val(this._state.getName());
+        $('#dialog-' + this._id + '-default').val(this._state.getDefault() ? '1' : '0');
 
         if (this._project.getType() == 'moore') {
             var tbody = output.find('tbody').html('');
@@ -94,6 +108,7 @@ define([
     StateDialog.prototype.onConfirm = function () {
         var self = this;
         this._state.setName($('#dialog-' + this._id + '-name').val());
+        this._state.setDefault($('#dialog-' + this._id + '-default').val() == '1');
         $('#dialog-' + this._id + '-output tbody tr').each(function () {
             var name = $(this).find('input[name="name"]').val();
             var value = $(this).find('input[name="value"]').val();
@@ -105,6 +120,15 @@ define([
             signal.setName(name);
             signal.setValue(value);
         });
+        if (this._state.getDefault()) {
+            var stateList = this._project.getStateList();
+            for (var i = 0, c = stateList.length(); i < c; i++) {
+                var state = stateList.get(i);
+                if (state !== this._state && state.getDefault()) {
+                    state.setDefault(false);
+                }
+            }
+        }
         Dialog.prototype.onConfirm.call(this);
     };
 
