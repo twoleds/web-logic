@@ -44,6 +44,15 @@ define([
         return value;
     };
 
+    ConditionList.prototype.getByInput = function (input) {
+        for (var i = 0; i < this._items.length; i++) {
+            if (this._items[i].test(input)) {
+                return this._items[i];
+            }
+        }
+        return null;
+    };
+
     ConditionList.prototype.length = function () {
         return this._items.length;
     };

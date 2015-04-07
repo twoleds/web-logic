@@ -36,6 +36,16 @@ define([
         this._items = [];
     };
 
+    ValueList.prototype.copy = function (values) {
+        this.clear();
+        for (var i = 0; i < values._items.length; i++) {
+            var value = new Value();
+            value.setName(values._items[i].getName());
+            value.setValue(values._items[i].getValue());
+            this.append(value);
+        }
+    };
+
     ValueList.prototype.get = function (index) {
         var value = null;
         if (index >= 0 && index < this._items.length) {

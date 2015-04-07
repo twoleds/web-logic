@@ -95,7 +95,7 @@ define([
         state.setXY(json.x, json.y);
         state.setDefault(json.default);
         if (type == Project.TYPE_MOORE) {
-            this._readValueList(json.values, state.getValueList());
+            this._readValueList(json.values, state.getOutput());
         }
         return state;
     };

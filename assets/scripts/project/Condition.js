@@ -34,6 +34,17 @@ define([
         return this._output;
     };
 
+    Condition.prototype.test = function (input) {
+        for (var i = 0, c = this._input.length(); i < c; i++) {
+            var signalA = this._input.get(i);
+            var signalB = input.getByName(signalA.getName());
+            if (signalB === null || signalB.getValue() != signalA.getValue()) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     return Condition;
 
 });

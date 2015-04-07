@@ -59,7 +59,7 @@ define([
         ctx.arcTo(this._x - this._r, this._y - this._r, this._x, this._y - this._r, this._r);
         ctx.closePath();
 
-        if (this._simulator.getCurrentState() == this) {
+        if (this._simulator.getCurrentState() == this._state) {
             ctx.fillStyle = '#ccffcc';
             ctx.strokeStyle = '#a80036';
         } else {

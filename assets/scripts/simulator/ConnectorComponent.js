@@ -130,8 +130,8 @@ define([
             this._c2 = c2;
             this._c3 = c3;
 
-            if (this._simulator.getCurrentConnector() == this) {
-                ctx.strokeStyle = "#cfc";
+            if (this._simulator.getCurrentConnector() == this._connector) {
+                ctx.strokeStyle = "#393";
             } else {
                 ctx.strokeStyle = "#000";
             }
@@ -163,7 +163,7 @@ define([
                 for (var i = 0; i < conditionList.length(); i++) {
                     var condition = conditionList.get(i);
                     if (currentCondition == condition) {
-                        ctx.fillStyle = "#cfc";
+                        ctx.fillStyle = "#393";
                     } else {
                         ctx.fillStyle = "#000";
                     }

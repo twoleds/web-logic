@@ -23,9 +23,10 @@ define([
     "simulator/ToolbarStep",
     "simulator/ConnectorComponent",
     "simulator/StateComponent",
-    "project/ValueList"
+    "project/ValueList",
+    "project/Value"
 ], function (Container, Engine, ToolbarGroup, ToolbarPlay, ToolbarReset, ToolbarStep,
-             ConnectorComponent, StateComponent, ValueList) {
+             ConnectorComponent, StateComponent, ValueList, Value) {
 
     function Simulator(environment, project) {
         Container.apply(this);
@@ -36,11 +37,25 @@ define([
         this._input = new ValueList();
         this._output = new ValueList();
 
+        var signalList = this._project.getSignalList();
+        for (var i = 0, c = signalList.length(); i < c; i++) {
+            var signal = signalList.get(i);
+            var value = new Value();
+            value.setName(signal.getName());
+            value.setValue('0');
+            if (signal.getDirection() == 'input') {
+                this._input.append(value);
+            } else {
+                this._output.append(value);
+            }
+        }
+
         this._currentCondition = null;
         this._currentConnector = null;
         this._currentState = null;
 
         this._init();
+        window.simul = this;
     }
 
     Simulator.prototype = Object.create(Container.prototype);
@@ -82,7 +97,7 @@ define([
             states[state.getName()] = component;
             this.appendChild(component);
             if (state.getDefault()) {
-                this._currentState = component;
+                this._currentState = state;
             }
         }
 
@@ -120,6 +135,33 @@ define([
 
     Simulator.prototype.getOutput = function () {
         return this._output;
+    };
+
+    Simulator.prototype.step = function () {
+
+        if (this._currentConnector !== null) {
+            this._currentConnector = null;
+            this._currentCondition = null;
+            this._engine.update();
+        }
+
+        var connectors = this._project.getConnectorList().getBySource(this._currentState.getName());
+        for (var i = 0; i < connectors.length; i++) {
+            var condition = connectors[i].getConditionList().getByInput(this._input);
+            if (condition !== null) {
+                this._currentState = this._project.getStateList().getByName(connectors[i].getTarget());
+                this._currentConnector = connectors[i];
+                this._currentCondition = condition;
+                if (this._project.getType() == "moore") {
+                    this._output.copy(this._currentState.getOutput());
+                } else {
+                    this._output.copy(this._currentCondition.getOutput());
+                }
+                this._engine.update();
+                break;
+            }
+        }
+
     };
 
     return Simulator;
