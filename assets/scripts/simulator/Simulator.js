@@ -65,27 +65,59 @@ define([
         this._environment.getToolbar().removeGroup(this._toolbar);
     };
 
-    Simulator.prototype._init = function () {
+    Simulator.prototype._initTask = function () {
+
+        var container = document.createElement("div");
+        container.style.position = "absolute";
+        container.style.left = "0";
+        container.style.top = "0";
+        container.style.width = "100%";
+        container.style.height = "100px";
+        container.style.boxSizing = "border-box";
+        this._container.appendChild(container);
+
+        var canvas = document.createElement("canvas");
+        canvas.style.width = "300px";
+        canvas.style.height = "100px";
+        canvas.style.display = "block";
+        canvas.style.margin = "0 auto";
+        canvas.width = 300;
+        canvas.height = 100;
+        container.appendChild(canvas);
+
+        this._taskContainer = container;
+        this._taskCanvas = canvas;
+        this._task = null;
+
+        var self = this;
+        require(["simulator/carpark/CarPark"], function (CarPark) {
+            self._task = new CarPark(self);
+            self._task._canvas = self._taskCanvas;
+        });
+
+    };
+
+    Simulator.prototype._initSimulator = function () {
+
+        var container = document.createElement("div");
+        container.style.position = "absolute";
+        container.style.left = "0";
+        container.style.top = "0";
+        container.style.width = "100%";
+        container.style.height = "100%";
+        container.style.paddingTop = "100px";
+        container.style.boxSizing = "border-box";
+        this._container.appendChild(container);
 
         var canvas = document.createElement("canvas");
         canvas.style.width = "100%";
         canvas.style.height = "100%";
         canvas.width = this._environment._content.offsetWidth;
         canvas.height = this._environment._content.offsetHeight;
-        this._environment._content.appendChild(canvas);
+        container.appendChild(canvas);
 
         this._engine = new Engine(canvas);
         this._engine.getContainer().appendChild(this);
-
-        this._toolbar = new ToolbarGroup();
-        this._environment.getToolbar().appendGroup(this._toolbar);
-
-        this._toolbarPlay = new ToolbarPlay(this);
-        this._toolbar.appendButton(this._toolbarPlay);
-        this._toolbarStep = new ToolbarStep(this);
-        this._toolbar.appendButton(this._toolbarStep);
-        this._toolbarReset = new ToolbarReset(this);
-        this._toolbar.appendButton(this._toolbarReset);
 
         var stateList = this._project.getStateList();
         var connectorList = this._project.getConnectorList();
@@ -114,6 +146,32 @@ define([
         }
 
         this._engine.update();
+
+    };
+
+    Simulator.prototype._init = function () {
+
+        this._toolbar = new ToolbarGroup();
+        this._environment.getToolbar().appendGroup(this._toolbar);
+
+        this._toolbarPlay = new ToolbarPlay(this);
+        this._toolbar.appendButton(this._toolbarPlay);
+        this._toolbarStep = new ToolbarStep(this);
+        this._toolbar.appendButton(this._toolbarStep);
+        this._toolbarReset = new ToolbarReset(this);
+        this._toolbar.appendButton(this._toolbarReset);
+
+        var container = document.createElement("div");
+        container.style.position = "relative";
+        container.style.width = "100%";
+        container.style.height = "100%";
+        container.style.left = "0";
+        container.style.top = "0";
+        this._environment._content.appendChild(container);
+        this._container = container;
+
+        this._initSimulator();
+        this._initTask();
 
     };
 
@@ -160,6 +218,10 @@ define([
                 this._engine.update();
                 break;
             }
+        }
+
+        if (this._task !== null) {
+            this._task.step();
         }
 
     };

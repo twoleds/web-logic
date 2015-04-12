@@ -19,10 +19,19 @@ define([], function () {
     function Task(simulator) {
         this._simulator = simulator;
         this._canvas = null;
+        this._updateRequest = null;
     }
 
     Task.prototype = Object.create(Object.prototype);
     Task.prototype.constructor = Task;
+
+    Task.prototype.getInput = function () {
+        return this._simulator.getInput();
+    };
+
+    Task.prototype.getOutput = function () {
+        return this._simulator.getOutput();
+    };
 
     Task.prototype.paint = function (ctx) {
 
@@ -33,7 +42,16 @@ define([], function () {
     };
 
     Task.prototype.update = function () {
-
+        var self = this;
+        if (this._updateRequest === null) {
+            this._updateRequest = window.requestAnimationFrame(function () {
+                self._updateRequest = null;
+                var ctx = self._canvas.getContext("2d");
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                self.paint(ctx);
+            });
+        }
     };
 
     return Task;

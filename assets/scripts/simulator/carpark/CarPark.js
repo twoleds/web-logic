@@ -19,7 +19,7 @@ define([
 ], function (Task) {
 
     function CarPark(simulator) {
-        Task.apply(simulator);
+        Task.call(this, simulator);
 
         var self = this;
 
@@ -54,7 +54,7 @@ define([
         ctx.drawImage(this._imgBackground, 0, 0, 300, 100);
 
         // paint semaphore colors
-        var output = this._simulator.getOutput();
+        var output = this.getOutput();
         if (output.length() >= 1) {
             var isCarParkFree = output.get(0).getValue() == 0;
 
@@ -66,7 +66,7 @@ define([
             ctx.arcTo(82, 8, 87.5, 8, 5.5);
             ctx.closePath();
 
-            ctx.fillStyle = isCarParkFree ? "#660000" : "#cc0000";
+            ctx.fillStyle = isCarParkFree ? "#330000" : "#cc0000";
             ctx.fill();
 
             ctx.beginPath();
@@ -77,12 +77,12 @@ define([
             ctx.arcTo(82, 22, 87.5, 22, 5.5);
             ctx.closePath();
 
-            ctx.fillStyle = isCarParkFree ? "#00cc00" : "#006600";
+            ctx.fillStyle = isCarParkFree ? "#00cc00" : "#003300";
             ctx.fill();
         }
 
         // paint sensors
-        var input = this._simulator.getInput();
+        var input = this.getInput();
         if (input.length() >= 2) {
             var isSensorOneDown = input.get(0).getValue() == 0;
             var isSensorTwoDown = input.get(1).getValue() == 0;
@@ -102,17 +102,19 @@ define([
     };
 
     CarPark.prototype.step = function () {
-        switch (this._currentState) {
-            case 'none':
-                this._stepNone();
-                break;
-            case 'entering':
-                this._stepEntering();
-                break;
-            case 'leaving':
-                this._stepLeaving();
-                break;
-        }
+        //switch (this._currentState) {
+        //    case 'none':
+        //        this._stepNone();
+        //        break;
+        //    case 'entering':
+        //        this._stepEntering();
+        //        break;
+        //    case 'leaving':
+        //        this._stepLeaving();
+        //        break;
+        //}
+
+        this.update();
     };
 
     return CarPark;
