@@ -29,7 +29,10 @@ define([
     ToolbarStep.prototype.constructor = ToolbarStep;
 
     ToolbarStep.prototype.execute = function () {
-
+        var self = this;
+        setTimeout(function () {
+            self._simulator.step();
+        }, 1);
     };
 
     return ToolbarStep;

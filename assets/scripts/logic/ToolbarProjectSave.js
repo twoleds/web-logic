@@ -38,8 +38,8 @@ define([
 
         var date = new Date();
         var name = "automat-" + date.getFullYear() + "-";
-        name += ((date.getMonth() < 10) ? "0" : "") + date.getMonth() + "-";
-        name += ((date.getDay() < 10) ? "0" : "") + date.getDay() + "-";
+        name += ((date.getMonth() < 9) ? "0" : "") + (date.getMonth() + 1) + "-";
+        name += ((date.getDate() < 10) ? "0" : "") + date.getDate() + "-";
         name += ((date.getHours() < 10) ? "0" : "") + date.getHours() + "-";
         name += ((date.getMinutes() < 10) ? "0" : "") + date.getMinutes();
         name += ".fsm";

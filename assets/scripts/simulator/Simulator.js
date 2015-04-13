@@ -18,6 +18,7 @@ define([
     "engine/Container",
     "engine/Engine",
     "logic/ToolbarGroup",
+    "simulator/ToolbarPause",
     "simulator/ToolbarPlay",
     "simulator/ToolbarReset",
     "simulator/ToolbarStep",
@@ -25,7 +26,7 @@ define([
     "simulator/StateComponent",
     "project/ValueList",
     "project/Value"
-], function (Container, Engine, ToolbarGroup, ToolbarPlay, ToolbarReset, ToolbarStep,
+], function (Container, Engine, ToolbarGroup, ToolbarPause, ToolbarPlay, ToolbarReset, ToolbarStep,
              ConnectorComponent, StateComponent, ValueList, Value) {
 
     function Simulator(environment, project) {
@@ -53,9 +54,9 @@ define([
         this._currentCondition = null;
         this._currentConnector = null;
         this._currentState = null;
+        this._interval = null;
 
         this._init();
-        window.simul = this;
     }
 
     Simulator.prototype = Object.create(Container.prototype);
@@ -156,6 +157,8 @@ define([
 
         this._toolbarPlay = new ToolbarPlay(this);
         this._toolbar.appendButton(this._toolbarPlay);
+        this._toolbarPause = new ToolbarPause(this);
+        this._toolbar.appendButton(this._toolbarPause);
         this._toolbarStep = new ToolbarStep(this);
         this._toolbar.appendButton(this._toolbarStep);
         this._toolbarReset = new ToolbarReset(this);

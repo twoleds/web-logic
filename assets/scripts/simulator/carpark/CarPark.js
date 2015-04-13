@@ -99,22 +99,97 @@ define([
             }
         }
 
+        // paint car on road
+        if (this._currentState == 'entering') {
+            ctx.drawImage(this._imgCar, 0, 0, 37, 25, this._currentX, this._currentY, 37, 25);
+        } else if (this._currentState == 'leaving') {
+            ctx.drawImage(this._imgCar, 0, 25, 37, 25, this._currentX, this._currentY, 37, 25);
+        }
+
     };
 
     CarPark.prototype.step = function () {
-        //switch (this._currentState) {
-        //    case 'none':
-        //        this._stepNone();
-        //        break;
-        //    case 'entering':
-        //        this._stepEntering();
-        //        break;
-        //    case 'leaving':
-        //        this._stepLeaving();
-        //        break;
-        //}
-
+        switch (this._currentState) {
+            case 'none':
+                this._stepNone();
+                break;
+            case 'entering':
+                this._stepEntering();
+                this._stepSensor();
+                break;
+            case 'leaving':
+                this._stepLeaving();
+                this._stepSensor();
+                break;
+        }
         this.update();
+    };
+
+    CarPark.prototype._stepEntering = function () {
+        if (this._currentX < (100 + (this._currentSlot * 37))) {
+            this._currentX += 10;
+        } else {
+            this._slots[this._currentSlot] = true;
+            this._currentState = 'none';
+        }
+        this.update();
+    };
+
+    CarPark.prototype._stepLeaving = function () {
+        if (this._currentX > -40) {
+            this._currentX -= 10;
+        } else {
+            this._currentState = 'none';
+        }
+        this.update();
+    };
+
+    CarPark.prototype._stepNone = function () {
+        if (Math.random() < 0.5) {
+            var slot = -1;
+            for (var i = 0; i < this._slots.length; i++) {
+                if (this._slots[i] == false) {
+                    slot = i;
+                    break;
+                }
+            }
+            if (slot >= 0) {
+                this._currentSlot = slot;
+                this._currentState = 'entering';
+                this._currentX = -40;
+                this._currentY = 62;
+                this.update();
+            }
+        } else {
+            var slot = Math.floor(Math.random() * this._slots.length);
+            if (this._slots[slot]) {
+                this._currentSlot = slot;
+                this._currentState = 'leaving';
+                this._currentX = 100 + (slot * 37);
+                this._currentY = 62;
+                this._slots[slot] = false;
+                this.update();
+            }
+        }
+    };
+
+    CarPark.prototype._stepSensor = function () {
+        if (this._currentState !== 'entering' && this._currentState !== 'leaving') {
+            this.getInput().get(0).setValue("0");
+            this.getInput().get(1).setValue("0");
+        } else {
+            if (this._currentX >= -18 && this._currentX <= 27) {
+                this.getInput().get(0).setValue("1");
+            } else {
+                this.getInput().get(0).setValue("0");
+            }
+            if (this._currentX >= 7 && this._currentX <= 51) {
+                this.getInput().get(1).setValue("1");
+            } else {
+                this.getInput().get(1).setValue("0");
+            }
+        }
+
     };
 
     return CarPark;

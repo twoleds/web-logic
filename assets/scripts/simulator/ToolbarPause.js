@@ -18,25 +18,23 @@ define([
     "../logic/ToolbarButton"
 ], function (ToolbarButton) {
 
-    function ToolbarPlay(simulator) {
+    function ToolbarPause(simulator) {
         this._simulator = simulator;
-        this.setIcon('fa fa-fw fa-play');
-        this.setTitle("Spustiť simuláciu");
+        this.setIcon('fa fa-fw fa-pause');
+        this.setTitle("Pozastaviť simuláciu");
         ToolbarButton.call(this);
     }
 
-    ToolbarPlay.prototype = Object.create(ToolbarButton.prototype);
-    ToolbarPlay.prototype.constructor = ToolbarPlay;
+    ToolbarPause.prototype = Object.create(ToolbarButton.prototype);
+    ToolbarPause.prototype.constructor = ToolbarPause;
 
-    ToolbarPlay.prototype.execute = function () {
-        var self = this;
-        if (this._simulator._interval == null) {
-            this._simulator._interval = setInterval(function () {
-                self._simulator.step();
-            }, 150);
+    ToolbarPause.prototype.execute = function () {
+        if (this._simulator._interval !== null) {
+            clearInterval(this._simulator._interval);
+            this._simulator._interval = null;
         }
     };
 
-    return ToolbarPlay;
+    return ToolbarPause;
 
 });
